@@ -1,44 +1,232 @@
-import axios from 'axios'
+import {
+  authService,
+  studentService,
+  superAdminService,
+  universityAdminService,
+  getStoredUser,
+} from './supabaseService'
 
-const API_BASE_URL = `http://${window.location.hostname}:8000/api`
-
-export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
+// Helper to simulate Axios response object
+const wrapResponse = <T>(data: any): { data: T; status: number; statusText: string; headers: any; config: any } => ({
+  data: data as T,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as any,
 })
 
-// Automatically add Sanctum Auth token to every request if available
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('auth_token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
+export const apiClient = {
+  interceptors: {
+    request: { use: () => {} },
+    response: { use: () => {} },
   },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
 
-// Handle global responses (e.g. log out on 401 Unauthorized)
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('user_info')
-      
-      const path = window.location.pathname
-      if (path.startsWith('/admin') && path !== '/admin/login') {
-        window.location.href = '/admin/login'
-      } else if (!path.startsWith('/admin') && path !== '/login' && path !== '/register') {
-        window.location.href = '/login'
-      }
+  async get<T = any>(url: string, config?: any): Promise<{ data: T }> {
+    const user = getStoredUser()
+    const cleanUrl = url.split('?')[0]
+
+    // 1. Auth & Profile
+    if (cleanUrl === '/user' || cleanUrl === '/student/profile') {
+      if (!user) throw new Error('Unauthenticated')
+      const profile = await authService.getCurrentProfile(user.id)
+      return wrapResponse(profile)
     }
-    return Promise.reject(error)
-  }
-)
+
+    // 2. Student Routes
+    if (cleanUrl === '/student/dashboard') {
+      if (!user) throw new Error('Unauthenticated')
+      const data = await studentService.getDashboard(user.id)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl.startsWith('/student/universities/')) {
+      if (!user) throw new Error('Unauthenticated')
+      const id = Number(cleanUrl.replace('/student/universities/', ''))
+      const data = await studentService.getUniversityDetail(user.id, id)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/student/participant') {
+      if (!user) throw new Error('Unauthenticated')
+      const data = await studentService.getParticipant(user.id)
+      return wrapResponse(data)
+    }
+
+    if (
+      cleanUrl === '/student/leaderboard' ||
+      cleanUrl === '/superadmin/leaderboard' ||
+      cleanUrl === '/university-admin/leaderboard'
+    ) {
+      const data = await studentService.getLeaderboard()
+      return wrapResponse(data)
+    }
+
+    // 3. SuperAdmin Routes
+    if (cleanUrl === '/superadmin/stats') {
+      const data = await superAdminService.getStats()
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/superadmin/universities') {
+      const data = await superAdminService.listUniversities()
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/superadmin/university-admins') {
+      const data = await superAdminService.listUniversityAdmins()
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/superadmin/students') {
+      const params = config?.params || {}
+      const data = await superAdminService.listStudents(params.search, params.status)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl.startsWith('/superadmin/students/') && cleanUrl.endsWith('/progress')) {
+      const parts = cleanUrl.split('/')
+      const studentId = Number(parts[3])
+      const data = await superAdminService.getStudentProgress(studentId)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/superadmin/lucky-draw/participants') {
+      const data = await superAdminService.listParticipants()
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/superadmin/lucky-draw/winners' || cleanUrl === '/student/lucky-draw/winners') {
+      const data = await superAdminService.getWinners()
+      return wrapResponse(data)
+    }
+
+    // 4. University Admin Routes
+    if (cleanUrl === '/university-admin/dashboard') {
+      if (!user) throw new Error('Unauthenticated')
+      const data = await universityAdminService.getDashboard(user.id)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/university-admin/booth') {
+      if (!user) throw new Error('Unauthenticated')
+      const data = await universityAdminService.getBooth(user.id)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/university-admin/visitors') {
+      if (!user) throw new Error('Unauthenticated')
+      const data = await universityAdminService.getVisitors(user.id)
+      return wrapResponse(data)
+    }
+
+    throw new Error(`Unhandled GET route: ${url}`)
+  },
+
+  async post<T = any>(url: string, data?: any, _config?: any): Promise<{ data: T }> {
+    const user = getStoredUser()
+    const cleanUrl = url.split('?')[0]
+
+    // 1. Public Auth
+    if (cleanUrl === '/register') {
+      const res = await authService.register(data.name, data.password)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl === '/login') {
+      const res = await authService.login(data.name, data.password)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl === '/logout') {
+      return wrapResponse({ message: 'Logout successful.' })
+    }
+
+    // 2. Student Actions
+    if (cleanUrl === '/student/scan') {
+      if (!user) throw new Error('Unauthenticated')
+      const res = await studentService.scanQR(user.id, data.qr_token)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl.startsWith('/student/universities/') && cleanUrl.endsWith('/point')) {
+      if (!user) throw new Error('Unauthenticated')
+      const parts = cleanUrl.split('/')
+      const uniId = Number(parts[3])
+      const res = await studentService.rateUniversity(user.id, uniId, data.score)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl === '/student/join-lucky-draw') {
+      if (!user) throw new Error('Unauthenticated')
+      const res = await studentService.joinLuckyDraw(user.id)
+      return wrapResponse(res)
+    }
+
+    // 3. SuperAdmin Actions
+    if (cleanUrl === '/superadmin/university-admins') {
+      const res = await superAdminService.storeUniversityAdmin(data)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl.startsWith('/superadmin/universities/') && cleanUrl !== '/superadmin/universities') {
+      const id = Number(cleanUrl.replace('/superadmin/universities/', ''))
+      const res = await superAdminService.updateUniversity(id, data)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl === '/superadmin/universities') {
+      const res = await superAdminService.storeUniversity(data)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl === '/superadmin/lucky-draw/spin') {
+      const res = await superAdminService.spinLuckyDraw(data?.prize)
+      return wrapResponse(res)
+    }
+
+    // 4. University Admin Actions
+    if (cleanUrl === '/university-admin/booth') {
+      if (!user) throw new Error('Unauthenticated')
+      const res = await universityAdminService.updateBooth(user.id, data)
+      return wrapResponse(res)
+    }
+
+    throw new Error(`Unhandled POST route: ${url}`)
+  },
+
+  async put<T = any>(url: string, data?: any): Promise<{ data: T }> {
+    const cleanUrl = url.split('?')[0]
+
+    if (cleanUrl.startsWith('/superadmin/university-admins/')) {
+      const id = Number(cleanUrl.replace('/superadmin/university-admins/', ''))
+      const res = await superAdminService.updateUniversityAdmin(id, data)
+      return wrapResponse<T>(res)
+    }
+
+    throw new Error(`Unhandled PUT route: ${url}`)
+  },
+
+  async delete<T = any>(url: string): Promise<{ data: T }> {
+    const cleanUrl = url.split('?')[0]
+
+    if (cleanUrl.startsWith('/superadmin/university-admins/')) {
+      const id = Number(cleanUrl.replace('/superadmin/university-admins/', ''))
+      const res = await superAdminService.destroyUniversityAdmin(id)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl.startsWith('/superadmin/universities/')) {
+      const id = Number(cleanUrl.replace('/superadmin/universities/', ''))
+      const res = await superAdminService.destroyUniversity(id)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl.startsWith('/superadmin/lucky-draw/winners/')) {
+      const id = Number(cleanUrl.replace('/superadmin/lucky-draw/winners/', ''))
+      const res = await superAdminService.destroyWinner(id)
+      return wrapResponse(res)
+    }
+
+    throw new Error(`Unhandled DELETE route: ${url}`)
+  },
+}

@@ -128,6 +128,10 @@ export const StudentManagement: React.FC = () => {
           <h2 className="text-2xl font-extrabold tracking-tight text-text-primary font-sans">Students Passport Progress</h2>
           <p className="text-xs text-text-secondary">View passport check-ins, search student details, and export event data</p>
         </div>
+        <Button variant="secondary" onClick={handleExportPDF} className="flex items-center gap-2 self-start sm:self-auto">
+          <Download size={16} />
+          Export PDF
+        </Button>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">

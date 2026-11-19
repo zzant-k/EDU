@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Building2, Users, Gift, LogOut, ShieldCheck, UserCog, Menu, X, Trophy } from 'lucide-react'
+import { LayoutDashboard, Building2, Users, Gift, LogOut, UserCog, Menu, X, Trophy } from 'lucide-react'
 import { useAuth } from '../store/AuthContext'
 
 export const AdminLayout: React.FC = () => {
