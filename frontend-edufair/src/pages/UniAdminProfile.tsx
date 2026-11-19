@@ -81,31 +81,31 @@ export const UniAdminProfile: React.FC = () => {
   if (!booth) return <div>No booth assigned</div>
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full text-left">
       <div>
-        <h1 className="text-3xl font-extrabold text-text-primary mb-1">Booth Profile</h1>
-        <p className="text-text-secondary">Update your university information and access your QR Code.</p>
+        <h2 className="text-2xl font-bold text-slate-900 mb-1">Booth Profile</h2>
+        <p className="text-xs text-slate-500">Perbarui informasi stan dan unduh/cetak QR Code stempel booth</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="p-6">
-          <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
+        <Card className="p-6 rounded-2xl border border-slate-200/90 bg-white shadow-xs">
+          <h2 className="text-base font-bold text-slate-900 mb-4">Edit Profile</h2>
           <form onSubmit={handleSave} className="flex flex-col gap-4">
             <div>
-              <label className="block text-sm font-semibold text-text-secondary mb-1">Description</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Deskripsi Profil Booth</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-50 border border-border-custom rounded-xl outline-none focus:ring-2 focus:ring-primary/20"
+                className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 text-sm"
                 rows={5}
               />
             </div>
-            <Button type="submit" isLoading={saving} className="self-end px-6 mt-2">Save Changes</Button>
+            <Button type="submit" isLoading={saving} className="self-end px-5 text-xs font-semibold py-2.5 rounded-xl mt-2">Save Changes</Button>
           </form>
         </Card>
 
-        <Card className="p-6 flex flex-col items-center">
-          <h2 className="text-xl font-bold mb-4 self-start">QR Code</h2>
+        <Card className="p-6 flex flex-col items-center rounded-2xl border border-slate-200/90 bg-white shadow-xs">
+          <h2 className="text-base font-bold text-slate-900 mb-4 self-start">Official QR Code</h2>
           <div ref={printAreaRef} className="p-2 border border-border-custom rounded-2xl bg-white mb-6 w-full max-w-sm mx-auto">
             <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '2rem' }}>
               <span className="header" style={{ fontSize: '0.875rem', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>Digital Stamp Pass</span>

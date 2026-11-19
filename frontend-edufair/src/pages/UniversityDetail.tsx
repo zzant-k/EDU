@@ -6,6 +6,7 @@ import { Card } from '../components/ui/Card'
 import { Skeleton } from '../components/ui/Skeleton'
 import { Button } from '../components/ui/Button'
 import { motion } from 'framer-motion'
+import { getLogoUrl } from '../utils/image'
 
 interface University {
   id: number
@@ -83,7 +84,7 @@ export const UniversityDetail: React.FC = () => {
         <div className="w-24 h-24 rounded-2xl bg-slate-50 border border-border-custom overflow-hidden flex items-center justify-center p-3">
           {university.logo ? (
             <img 
-              src={university.logo_url || `http://${window.location.hostname}:8000/storage/${university.logo}`} 
+              src={getLogoUrl(university.logo)} 
               alt={university.name} 
               className="w-full h-full object-contain"
               onError={(e) => {

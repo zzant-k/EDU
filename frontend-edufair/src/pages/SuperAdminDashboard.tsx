@@ -63,13 +63,13 @@ export const SuperAdminDashboard: React.FC = () => {
     const maxVal = Math.max(...items.map((i) => i.count), 5)
     
     return (
-      <Card className="flex flex-col gap-4 border border-border-custom bg-surface p-6 shadow-sm">
+      <Card className="flex flex-col gap-4 border border-slate-200/90 bg-white p-6 rounded-2xl shadow-xs">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">{label}</span>
-            <span className="text-lg font-extrabold text-text-primary">Last 7 Days</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{label}</span>
+            <span className="text-base font-bold text-slate-900">Last 7 Days</span>
           </div>
-          <TrendingUp className="text-text-secondary/40" size={20} />
+          <TrendingUp className="text-slate-400" size={18} />
         </div>
 
         <div className="relative w-full h-[180px] mt-2 flex flex-col justify-end">
@@ -89,7 +89,7 @@ export const SuperAdminDashboard: React.FC = () => {
                     style={{ height: `${barHeight}%` }}
                   />
 
-                  <span className="text-[10px] text-text-secondary font-semibold truncate w-12 text-center">
+                  <span className="text-[10px] text-slate-500 font-medium truncate w-12 text-center">
                     {item.date.split(',')[0]}
                   </span>
                 </div>
@@ -97,7 +97,7 @@ export const SuperAdminDashboard: React.FC = () => {
             })}
           </div>
 
-          <div className="absolute inset-0 flex flex-col justify-between pointer-events-none border-b border-border-custom px-2 h-[150px] pb-6">
+          <div className="absolute inset-0 flex flex-col justify-between pointer-events-none border-b border-slate-200 px-2 h-[150px] pb-6">
             <div className="w-full border-t border-dashed border-slate-100"></div>
             <div className="w-full border-t border-dashed border-slate-100"></div>
             <div className="w-full border-t border-dashed border-slate-100"></div>
@@ -108,18 +108,18 @@ export const SuperAdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-8 pb-6">
+    <div className="flex flex-col gap-8 pb-6 w-full">
       <div className="flex flex-col gap-1 text-left">
-        <h2 className="text-2xl font-extrabold tracking-tight text-text-primary font-sans">Dashboard</h2>
-        <p className="text-xs text-text-secondary">Overview of student participations and stamp collection analytics</p>
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900">Dashboard Overview</h2>
+        <p className="text-xs text-slate-500">Statistik kehadiran siswa, booth universitas, dan aktivitas undian</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card className="flex flex-col justify-between p-5 border border-border-custom bg-surface relative overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1">
+        <Card className="flex flex-col justify-between p-5 border border-slate-200/90 bg-white rounded-2xl relative overflow-hidden shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1 text-left">
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Total Students</span>
-              <span className="text-2xl font-black text-text-primary font-sans">{data.total_students}</span>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Total Students</span>
+              <span className="text-2xl font-bold text-slate-900">{data.total_students}</span>
             </div>
             <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-primary">
               <Users size={16} />
@@ -127,23 +127,23 @@ export const SuperAdminDashboard: React.FC = () => {
           </div>
         </Card>
 
-        <Card className="flex flex-col justify-between p-5 border border-border-custom bg-surface relative overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1">
+        <Card className="flex flex-col justify-between p-5 border border-slate-200/90 bg-white rounded-2xl relative overflow-hidden shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1 text-left">
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Completed Students</span>
-              <span className="text-2xl font-black text-success font-sans">{data.completed_students}</span>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Completed Students</span>
+              <span className="text-2xl font-bold text-emerald-600">{data.completed_students}</span>
             </div>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-success">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
               <CheckCircle2 size={16} />
             </div>
           </div>
         </Card>
 
-        <Card className="flex flex-col justify-between p-5 border border-border-custom bg-surface relative overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1">
+        <Card className="flex flex-col justify-between p-5 border border-slate-200/90 bg-white rounded-2xl relative overflow-hidden shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1 text-left">
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Pending Students</span>
-              <span className="text-2xl font-black text-slate-700 font-sans">{data.remaining_students}</span>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Pending Students</span>
+              <span className="text-2xl font-bold text-slate-700">{data.remaining_students}</span>
             </div>
             <div className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200/50 flex items-center justify-center text-slate-600">
               <Users size={16} className="opacity-70" />
@@ -151,11 +151,11 @@ export const SuperAdminDashboard: React.FC = () => {
           </div>
         </Card>
 
-        <Card className="flex flex-col justify-between p-5 border border-border-custom bg-surface relative overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1">
+        <Card className="flex flex-col justify-between p-5 border border-slate-200/90 bg-white rounded-2xl relative overflow-hidden shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1 text-left">
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Universities</span>
-              <span className="text-2xl font-black text-text-primary font-sans">{data.total_universities}</span>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Universities</span>
+              <span className="text-2xl font-bold text-slate-900">{data.total_universities}</span>
             </div>
             <div className="w-9 h-9 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600">
               <Building2 size={16} />
@@ -163,11 +163,11 @@ export const SuperAdminDashboard: React.FC = () => {
           </div>
         </Card>
 
-        <Card className="flex flex-col justify-between p-5 border border-border-custom bg-surface relative overflow-hidden shadow-sm transition-all duration-300 hover:-translate-y-1">
+        <Card className="flex flex-col justify-between p-5 border border-slate-200/90 bg-white rounded-2xl relative overflow-hidden shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:shadow-sm">
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1 text-left">
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-widest">Draw Participants</span>
-              <span className="text-2xl font-black text-amber-500 font-sans">{data.lucky_draw_participants}</span>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Draw Participants</span>
+              <span className="text-2xl font-bold text-amber-500">{data.lucky_draw_participants}</span>
             </div>
             <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-500">
               <Ticket size={16} />

@@ -4,6 +4,8 @@ import { apiClient } from '../api/client'
 import { Card } from '../components/ui/Card'
 import { useAuth } from '../store/AuthContext'
 
+import { getLogoUrl } from '../utils/image'
+
 interface LeaderboardEntry {
   id: number
   name: string
@@ -40,27 +42,27 @@ export const AdminLeaderboard: React.FC = () => {
   }, [user?.role])
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full text-left">
       <div className="flex justify-between items-end">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-black text-text-primary flex items-center gap-2">
-            <Trophy className="text-amber-500" /> Leaderboard
+          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <Trophy className="text-amber-500" size={24} /> Leaderboard
           </h2>
-          <p className="text-sm text-text-secondary">Peringkat poin universitas secara real-time berdasarkan voting siswa.</p>
+          <p className="text-xs text-slate-500">Peringkat poin universitas secara real-time berdasarkan voting siswa</p>
         </div>
       </div>
 
-      <Card className="p-0 overflow-hidden">
+      <Card className="p-0 overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-border-custom text-[10px] sm:text-xs font-bold text-text-secondary uppercase tracking-wider">
-                <th className="px-3 sm:px-6 py-3 sm:py-4 w-12 sm:w-20">Rank</th>
-                <th className="px-3 sm:px-6 py-3 sm:py-4">Universitas</th>
-                <th className="px-3 sm:px-6 py-3 sm:py-4 text-right">Poin / Vote</th>
+              <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 sm:py-3.5 w-16 sm:w-20">Rank</th>
+                <th className="px-4 sm:px-6 py-3 sm:py-3.5">Universitas</th>
+                <th className="px-4 sm:px-6 py-3 sm:py-3.5 text-right">Poin / Vote</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border-custom">
+            <tbody className="divide-y divide-slate-100">
               {loading && leaderboard.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="px-6 py-8 text-center text-text-secondary font-medium">
@@ -86,7 +88,7 @@ export const AdminLeaderboard: React.FC = () => {
                       <div className="flex items-center gap-2 sm:gap-3">
                         <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white rounded-lg border border-border-custom p-0.5 sm:p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
                           {uni.logo ? (
-                            <img src={`http://${window.location.hostname}:8000/storage/${uni.logo}`} alt={uni.name} className="w-full h-full object-contain" />
+                            <img src={getLogoUrl(uni.logo)} alt={uni.name} className="w-full h-full object-contain" />
                           ) : (
                             <div className="text-slate-300 font-bold text-xs sm:text-base">{uni.name.charAt(0)}</div>
                           )}

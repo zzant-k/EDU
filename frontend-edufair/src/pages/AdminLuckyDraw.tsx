@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
   Search,
-  Bell,
   Sparkles,
   Play,
   Square,
@@ -322,36 +321,18 @@ export const AdminLuckyDraw: React.FC = () => {
   }
 
   return (
-    <div className="w-full flex items-center justify-center p-0 xl:p-4 bg-slate-50/50 text-left">
-      {/* simulated macOS window */}
-      <div className="w-full max-w-[1440px] rounded-2xl border border-hairline bg-slate-50/20 shadow-window overflow-hidden flex flex-col">
+    <div className="w-full flex items-center justify-center p-0 text-left">
+      {/* Main Container Card */}
+      <div className="w-full rounded-2xl border border-slate-200/90 bg-white shadow-xs overflow-hidden flex flex-col">
         
-        {/* Title Bar */}
-        <div className="h-11 border-b border-hairline bg-white flex items-center justify-between px-4 relative select-none">
-          {/* Traffic Lights */}
-          <div className="flex items-center gap-1.5 z-10">
-            <span className="w-3 h-3 rounded-full bg-[#FF5F57] hover:opacity-85 transition-opacity cursor-pointer" />
-            <span className="w-3 h-3 rounded-full bg-[#FEBC2E] hover:opacity-85 transition-opacity cursor-pointer" />
-            <span className="w-3 h-3 rounded-full bg-[#28C840] hover:opacity-85 transition-opacity cursor-pointer" />
-          </div>
-          {/* Centered Title */}
-          <div className="text-[13px] font-medium text-text-secondary absolute left-1/2 -translate-x-1/2">
-            Lucky Draw
-          </div>
-          <div className="w-12" /> {/* Spacer */}
-        </div>
-
-        {/* Top Nav Bar */}
-        <div className="h-14 border-b border-hairline bg-white px-5 flex items-center justify-center md:justify-between select-none">
-          {/* Left Brand */}
-
-          {/* Nav Pills */}
+        {/* Mobile Sub-Nav Switcher */}
+        <div className="md:hidden flex items-center justify-center p-2.5 border-b border-slate-200 bg-white">
           <div className="h-8 flex items-center bg-slate-100 p-0.5 rounded-lg text-[13px] gap-0.5">
             <button
               onClick={() => setActiveTab('dashboard')}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all cursor-pointer ${
                 activeTab === 'dashboard'
-                  ? 'bg-white shadow-sm font-semibold text-text-primary'
+                  ? 'bg-white shadow-xs font-semibold text-text-primary'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
             >
@@ -361,7 +342,7 @@ export const AdminLuckyDraw: React.FC = () => {
               onClick={() => setActiveTab('participants')}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all cursor-pointer ${
                 activeTab === 'participants'
-                  ? 'bg-white shadow-sm font-semibold text-text-primary'
+                  ? 'bg-white shadow-xs font-semibold text-text-primary'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
             >
@@ -371,22 +352,12 @@ export const AdminLuckyDraw: React.FC = () => {
               onClick={() => setActiveTab('history')}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-all cursor-pointer ${
                 activeTab === 'history'
-                  ? 'bg-white shadow-sm font-semibold text-text-primary'
+                  ? 'bg-white shadow-xs font-semibold text-text-primary'
                   : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               <History size={13} /> History
             </button>
-          </div>
-
-          {/* Right Profile / Actions */}
-          <div className="hidden md:flex items-center gap-3">
-            <button className="p-1.5 rounded-lg hover:bg-slate-50 text-text-secondary transition-colors cursor-pointer">
-              <Bell size={16} />
-            </button>
-            <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center font-bold text-xs text-blue-700 uppercase border border-blue-200">
-              SU
-            </div>
           </div>
         </div>
 

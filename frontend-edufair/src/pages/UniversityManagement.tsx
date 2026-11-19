@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Plus, Edit2, Trash2, Printer, Upload, Link as LinkIcon, MapPin, Building2 } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import { getLogoUrl } from '../utils/image'
 import { apiClient } from '../api/client'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
@@ -177,13 +178,13 @@ export const UniversityManagement: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-8 pb-6 text-left">
+    <div className="flex flex-col gap-8 pb-6 text-left w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-extrabold tracking-tight text-text-primary font-sans">Universities Booths</h2>
-          <p className="text-xs text-text-secondary">Register and configure university stamp booths and generate their QR Codes</p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">University Booths</h2>
+          <p className="text-xs text-slate-500">Kelola stan universitas, lokasi booth, dan cetak QR Code passport</p>
         </div>
-        <Button onClick={openCreateModal} className="flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 w-full sm:w-auto">
+        <Button onClick={openCreateModal} className="flex items-center justify-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-xl w-full sm:w-auto">
           <Plus size={16} />
           Add University
         </Button>
@@ -222,7 +223,7 @@ export const UniversityManagement: React.FC = () => {
                         <div className="w-9 h-9 rounded-lg bg-slate-100 border border-border-custom flex items-center justify-center overflow-hidden p-1">
                           {uni.logo ? (
                             <img 
-                              src={uni.logo_url || `http://${window.location.hostname}:8000/storage/${uni.logo}`} 
+                              src={getLogoUrl(uni.logo)} 
                               alt={uni.name} 
                               className="w-full h-full object-contain"
                               onError={(e) => {

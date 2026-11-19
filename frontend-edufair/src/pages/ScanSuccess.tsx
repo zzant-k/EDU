@@ -4,6 +4,7 @@ import { Check, Trophy, ArrowRight, Star } from 'lucide-react'
 import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { motion } from 'framer-motion'
+import { getLogoUrl } from '../utils/image'
 import { apiClient } from '../api/client'
 
 export const ScanSuccess: React.FC = () => {
@@ -96,7 +97,7 @@ export const ScanSuccess: React.FC = () => {
             <div className="w-14 h-14 rounded-xl bg-slate-50 border border-border-custom overflow-hidden flex items-center justify-center p-2 flex-shrink-0">
               {university.logo ? (
                 <img
-                  src={university.logo_url || `http://${window.location.hostname}:8000/storage/${university.logo}`}
+                  src={getLogoUrl(university.logo)}
                   alt={university.name}
                   className="w-full h-full object-contain"
                   onError={(e) => {

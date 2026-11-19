@@ -78,27 +78,27 @@ export const AdminUserManagement: React.FC = () => {
   if (loading) return <div>Loading...</div>
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full text-left">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-text-primary mb-1">University Admins</h1>
-          <p className="text-text-secondary text-sm sm:text-base">Manage admin accounts for university booths.</p>
+          <h2 className="text-2xl font-bold text-slate-900 mb-1">University Admins</h2>
+          <p className="text-xs text-slate-500">Kelola akun dan kredensial admin untuk booth universitas</p>
         </div>
-        <Button onClick={handleOpenNew} className="flex items-center justify-center gap-2 px-5 rounded-xl font-bold h-12 shadow-md w-full sm:w-auto">
-          <Plus size={18} /> Add Admin
+        <Button onClick={handleOpenNew} className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm shadow-xs w-full sm:w-auto">
+          <Plus size={16} /> Add Admin
         </Button>
       </div>
 
-      <Card className="overflow-hidden p-0 border border-border-custom shadow-sm rounded-2xl">
+      <Card className="overflow-hidden p-0 border border-slate-200/90 shadow-xs rounded-2xl bg-white">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/80 border-b border-border-custom">
-                <th className="px-4 sm:px-6 py-3 sm:py-4 font-bold text-xs sm:text-sm text-text-secondary uppercase tracking-wider">Username</th>
-                <th className="px-4 sm:px-6 py-3 sm:py-4 font-bold text-xs sm:text-sm text-text-secondary uppercase tracking-wider text-right">Actions</th>
+              <tr className="bg-slate-50/80 border-b border-slate-200">
+                <th className="px-4 sm:px-6 py-3 sm:py-3.5 font-semibold text-xs text-slate-500 uppercase tracking-wider">Username</th>
+                <th className="px-4 sm:px-6 py-3 sm:py-3.5 font-semibold text-xs text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {admins.map((admin) => (
                 <tr key={admin.id} className="border-b border-border-custom last:border-0 hover:bg-slate-50/50 transition-colors">
                   <td className="px-4 sm:px-6 py-3 sm:py-4">

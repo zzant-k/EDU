@@ -125,11 +125,11 @@ export const StudentManagement: React.FC = () => {
     <div className="flex flex-col gap-8 pb-6 text-left">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-extrabold tracking-tight text-text-primary font-sans">Students Passport Progress</h2>
-          <p className="text-xs text-text-secondary">View passport check-ins, search student details, and export event data</p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">Students Passport Progress</h2>
+          <p className="text-xs text-slate-500">Pantau kehadiran stempel siswa, cari data siswa, dan ekspor laporan</p>
         </div>
-        <Button variant="secondary" onClick={handleExportPDF} className="flex items-center gap-2 self-start sm:self-auto">
-          <Download size={16} />
+        <Button variant="secondary" onClick={handleExportPDF} className="flex items-center gap-2 self-start sm:self-auto text-xs font-semibold py-2 px-3.5 rounded-xl border border-slate-200">
+          <Download size={14} />
           Export PDF
         </Button>
       </div>

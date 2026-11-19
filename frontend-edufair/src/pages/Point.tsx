@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { apiClient } from '../api/client'
 import { useNavigate } from 'react-router-dom'
+import { getLogoUrl } from '../utils/image'
 
 interface LeaderboardEntry {
   id: number
@@ -79,7 +80,7 @@ export const Point: React.FC = () => {
                 </span>
                 {rank2?.logo ? (
                   <div className="w-12 h-12 bg-white rounded-full p-1 z-30 mb-[-10px] relative flex items-center justify-center overflow-hidden">
-                    <img src={`http://${window.location.hostname}:8000/storage/${rank2.logo}`} className="w-full h-full object-contain" />
+                    <img src={getLogoUrl(rank2.logo)} className="w-full h-full object-contain" />
                   </div>
                 ) : (
                   <div className="w-12 h-12 bg-slate-200 rounded-full z-30 mb-[-10px] relative flex items-center justify-center">
@@ -101,7 +102,7 @@ export const Point: React.FC = () => {
                 </span>
                 {rank1?.logo ? (
                   <div className="w-16 h-16 bg-white rounded-full p-1 z-30 mb-[-12px] relative flex items-center justify-center overflow-hidden">
-                    <img src={`http://${window.location.hostname}:8000/storage/${rank1.logo}`} className="w-full h-full object-contain" />
+                    <img src={getLogoUrl(rank1.logo)} className="w-full h-full object-contain" />
                   </div>
                 ) : (
                   <div className="w-16 h-16 bg-slate-200 rounded-full z-30 mb-[-12px] relative flex items-center justify-center">
@@ -123,7 +124,7 @@ export const Point: React.FC = () => {
                 </span>
                 {rank3?.logo ? (
                   <div className="w-12 h-12 bg-white rounded-full p-1 z-30 mb-[-10px] relative flex items-center justify-center overflow-hidden">
-                    <img src={`http://${window.location.hostname}:8000/storage/${rank3.logo}`} className="w-full h-full object-contain" />
+                    <img src={getLogoUrl(rank3.logo)} className="w-full h-full object-contain" />
                   </div>
                 ) : (
                   <div className="w-12 h-12 bg-slate-200 rounded-full z-30 mb-[-10px] relative flex items-center justify-center">
@@ -162,7 +163,7 @@ export const Point: React.FC = () => {
                   <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 overflow-hidden flex-shrink-0">
                     {uni.logo ? (
                       <img
-                        src={`http://${window.location.hostname}:8000/storage/${uni.logo}`}
+                        src={getLogoUrl(uni.logo)}
                         alt={uni.name}
                         className="w-full h-full object-contain"
                       />
