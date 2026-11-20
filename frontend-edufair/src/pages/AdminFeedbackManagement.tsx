@@ -326,7 +326,7 @@ export const AdminFeedbackManagement: React.FC = () => {
                     </td>
 
                     <td className="px-5 py-4 whitespace-nowrap">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white shadow-xs">
                         {fb.category}
                       </span>
                     </td>

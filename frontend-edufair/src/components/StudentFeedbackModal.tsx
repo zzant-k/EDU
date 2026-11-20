@@ -297,7 +297,7 @@ export const StudentFeedbackModal: React.FC = () => {
                           className="p-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/40 flex flex-col gap-2 transition-all"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200/80">
+                            <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white shadow-xs">
                               {fb.category}
                             </span>
                             <div className="flex items-center gap-1">
