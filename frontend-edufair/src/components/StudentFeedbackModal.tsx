@@ -6,6 +6,7 @@ import {
   Send,
   CheckCircle2,
   Clock,
+  Lock,
   MessageSquareHeart,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -278,15 +279,13 @@ export const StudentFeedbackModal: React.FC = () => {
                   </button>
                 </form>
 
-                {/* Feedback Saya Section (Hanya bisa dilihat diri sendiri) */}
+                {/* My Feedback Card (Privat - Tidak mempublikasikan isi pesan) */}
                 {myFeedbacks.length > 0 && (
                   <div className="flex flex-col gap-3 pt-5 border-t border-slate-100">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">
-                        Feedback yang Pernah Kamu Kirim
-                      </span>
-                      <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
-                        {myFeedbacks.length} masukan
+                      <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <Lock size={13} className="text-slate-400" />
+                        <span>My Feedback</span>
                       </span>
                     </div>
 
@@ -294,7 +293,7 @@ export const StudentFeedbackModal: React.FC = () => {
                       {myFeedbacks.map((fb) => (
                         <div
                           key={fb.id}
-                          className="p-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/40 flex flex-col gap-2 transition-all"
+                          className="p-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/50 flex flex-col gap-2.5 transition-all"
                         >
                           <div className="flex items-center justify-between gap-2">
                             <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white shadow-xs">
@@ -308,19 +307,21 @@ export const StudentFeedbackModal: React.FC = () => {
                                   className="fill-amber-400 text-amber-400"
                                 />
                               ))}
-                              <span className="text-[11px] font-bold text-slate-600 ml-1">
+                              <span className="text-[11px] font-bold text-slate-700 ml-1">
                                 {fb.rating}/5
                               </span>
                             </div>
                           </div>
 
-                          <p className="text-xs text-slate-800 leading-relaxed font-normal whitespace-pre-wrap">
-                            {fb.content}
-                          </p>
-
-                          <div className="flex items-center gap-1 text-[10px] text-slate-400 pt-1 border-t border-slate-200/40">
-                            <Clock size={11} />
-                            <span>{new Date(fb.created_at).toLocaleString('id-ID')}</span>
+                          <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-200/50">
+                            <span className="text-slate-600 font-medium flex items-center gap-1">
+                              <CheckCircle2 size={12} className="text-emerald-500" />
+                              <span>Feedback berhasil diterima panitia</span>
+                            </span>
+                            <div className="flex items-center gap-1 text-[10px] text-slate-400">
+                              <Clock size={11} />
+                              <span>{new Date(fb.created_at).toLocaleString('id-ID')}</span>
+                            </div>
                           </div>
                         </div>
                       ))}

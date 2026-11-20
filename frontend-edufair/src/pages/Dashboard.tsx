@@ -9,6 +9,7 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { motion } from 'framer-motion'
 import { getLogoUrl } from '../utils/image'
 import { StudentFeedbackModal } from '../components/StudentFeedbackModal'
+import { TicketCard } from '../components/TicketCard'
 
 interface University {
   id: number
@@ -163,30 +164,35 @@ export const Dashboard: React.FC = () => {
 
       {/* Interactive Lucky Draw Ticket */}
       {data.percentage === 100 ? (
-        <Card className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-900 border border-amber-300 p-5 rounded-2xl flex flex-col gap-4 shadow-md">
-          {/* Decorative ticket cutout circles */}
-          <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-6 h-6 rounded-full bg-slate-50 border-r border-amber-200 z-10"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 -right-3 w-6 h-6 rounded-full bg-slate-50 border-l border-amber-200 z-10"></div>
-          
-          <div className="flex justify-between items-start">
-            <div className="flex flex-col gap-1 text-left">
-              <span className="text-[9px] font-black uppercase tracking-widest text-amber-900/60">Kupon Resmi</span>
-              <h4 className="text-base font-black tracking-tight leading-none text-slate-950">LUCKY DRAW TICKET</h4>
-            </div>
+        data.lucky_draw.joined ? (
+          <div className="flex flex-col gap-2 w-full">
+            <TicketCard
+              participantNumber={data.lucky_draw.participant_number || '0001'}
+              studentName={data.student_name}
+              joinedAt={data.lucky_draw.joined_at}
+            />
+            <p className="text-[11px] text-center text-text-secondary font-medium">
+              Tiket resmi Anda telah terdaftar. Tunggu hasil undian pemenang di panggung!
+            </p>
           </div>
-
-          <div className="w-full border-t border-dashed border-amber-900/20 my-1"></div>
-
-          {data.lucky_draw.joined ? (
-            <div className="flex flex-col gap-1 text-left">
-              <span className="text-[10px] font-bold text-slate-700/80">Nomor Undian Anda:</span>
-              <span className="font-mono text-2xl font-black tracking-[0.2em] text-slate-950">{data.lucky_draw.participant_number}</span>
-              <span className="text-[9px] text-slate-700 font-semibold mt-1">Anda sudah terdaftar. Tunggu hasil pengumuman di panggung!</span>
+        ) : (
+          <Card className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-900 border border-amber-300 p-5 rounded-2xl flex flex-col gap-4 shadow-md">
+            {/* Decorative ticket cutout circles */}
+            <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-6 h-6 rounded-full bg-slate-50 border-r border-amber-200 z-10"></div>
+            <div className="absolute top-1/2 -translate-y-1/2 -right-3 w-6 h-6 rounded-full bg-slate-50 border-l border-amber-200 z-10"></div>
+            
+            <div className="flex justify-between items-start">
+              <div className="flex flex-col gap-1 text-left">
+                <span className="text-[9px] font-black uppercase tracking-widest text-amber-900/60">Kupon Siap Ditukar</span>
+                <h4 className="text-base font-black tracking-tight leading-none text-slate-950">LUCKY DRAW TICKET</h4>
+              </div>
             </div>
-          ) : (
+
+            <div className="w-full border-t border-dashed border-amber-900/20 my-1"></div>
+
             <div className="flex flex-col gap-3">
               <div className="text-left">
-                <p className="text-xs font-semibold text-slate-800">Semua stan telah dikunjungi! Segera tukarkan kupon Anda untuk mendapatkan nomor undian.</p>
+                <p className="text-xs font-semibold text-slate-800">Semua stan telah dikunjungi! Segera tukarkan kupon Anda untuk mendapatkan tiket resmi.</p>
               </div>
               <Button
                 onClick={handleJoinDraw}
@@ -195,8 +201,8 @@ export const Dashboard: React.FC = () => {
                 Klaim Tiket Undian Sekarang
               </Button>
             </div>
-          )}
-        </Card>
+          </Card>
+        )
       ) : (
         <Card className="relative overflow-hidden bg-slate-50 border border-dashed border-slate-300 p-5 rounded-2xl flex flex-col gap-4 shadow-sm bg-opacity-50">
           {/* Decorative ticket cutout circles */}

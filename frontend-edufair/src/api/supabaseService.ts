@@ -396,8 +396,13 @@ export const studentService = {
       }
     }
 
-    const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase()
-    const participant_number = `EDUP-${randomSuffix}`
+    // Generate sequential participant number (e.g. 0001, 0002, 0003...)
+    const { count: participantCount } = await supabase
+      .from('lucky_draw_participants')
+      .select('id', { count: 'exact', head: true })
+
+    const seq = (participantCount || 0) + 1
+    const participant_number = String(seq).padStart(4, '0')
 
     const { data: participant, error } = await supabase
       .from('lucky_draw_participants')

@@ -24,10 +24,11 @@ class LuckyDrawParticipant extends Model
     {
         parent::boot();
 
-        // Automatically generate a unique, clean participant number if not set
+        // Automatically generate sequential participant number (e.g. 0001, 0002...)
         static::creating(function ($participant) {
             if (empty($participant->participant_number)) {
-                $participant->participant_number = 'EDUP-' . strtoupper(Str::random(6));
+                $count = static::count();
+                $participant->participant_number = str_pad($count + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }

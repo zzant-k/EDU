@@ -6,6 +6,7 @@ import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Skeleton } from '../components/ui/Skeleton'
 import { motion } from 'framer-motion'
+import { TicketCard } from '../components/TicketCard'
 
 interface ParticipantInfo {
   id: number
@@ -93,7 +94,7 @@ export const LuckyDraw: React.FC = () => {
           </Card>
         </motion.div>
       ) : (
-        <div className="w-full max-w-sm flex flex-col items-center">
+        <div className="w-full max-w-sm sm:max-w-2xl flex flex-col items-center">
           {!participant ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -118,60 +119,25 @@ export const LuckyDraw: React.FC = () => {
             </motion.div>
           ) : (
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', damping: 15 }}
-              className="w-full flex flex-col gap-6"
+              transition={{ type: 'spring', damping: 18 }}
+              className="w-full flex flex-col items-center gap-4"
             >
-              <div className="text-center mb-2">
-                <h2 className="text-xl font-extrabold text-text-primary tracking-tight font-sans">Your Entry Ticket</h2>
-                <p className="text-xs text-text-secondary mt-1">Keep this ticket for the winner announcement</p>
+              <div className="text-center mb-1">
+                <h2 className="text-xl font-extrabold text-text-primary tracking-tight font-sans">
+                  Your Entry Ticket
+                </h2>
+                <p className="text-xs text-text-secondary mt-1">
+                  Simpan tiket ini untuk pengundian hadiah doorprize di panggung
+                </p>
               </div>
 
-              <div className="w-full bg-gradient-to-b from-primary to-blue-700 rounded-3xl text-white shadow-xl relative overflow-hidden flex flex-col border border-primary/20">
-                <div className="absolute -right-16 -top-16 w-44 h-44 rounded-full bg-white/10 blur-2xl"></div>
-                <div className="absolute -left-16 -bottom-16 w-44 h-44 rounded-full bg-secondary/20 blur-2xl"></div>
-
-                <div className="p-6 pb-4 border-b-2 border-dashed border-white/20 flex items-center justify-between relative">
-                  <div className="flex flex-col text-left gap-0.5">
-                    <span className="text-[10px] font-bold text-blue-100 tracking-wider uppercase">Event Passport</span>
-                    <span className="text-sm font-extrabold tracking-tight">Lucky Draw Entry</span>
-                  </div>
-                  <Ticket size={24} className="text-blue-100 opacity-80" />
-
-                  <div className="absolute left-0 bottom-0 -translate-x-1/2 translate-y-1/2 w-5 h-5 rounded-full bg-slate-50 border-r border-border-custom"></div>
-                  <div className="absolute right-0 bottom-0 translate-x-1/2 translate-y-1/2 w-5 h-5 rounded-full bg-slate-50 border-l border-border-custom"></div>
-                </div>
-
-                <div className="p-6 pt-6 flex flex-col gap-6 text-left relative">
-                  <div className="flex flex-col gap-1 items-center justify-center py-4 bg-white/10 rounded-2xl border border-white/15">
-                    <span className="text-[10px] font-bold text-blue-100 uppercase tracking-widest">Ticket Code</span>
-                    <span className="text-3xl font-black tracking-widest font-mono select-all">
-                      {participant.participant_number}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-bold text-blue-200 uppercase">Participant</span>
-                      <span className="text-xs font-bold truncate">{user?.name}</span>
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-bold text-blue-200 uppercase">Registered At</span>
-                      <span className="text-xs font-bold truncate">
-                        {new Date(participant.joined_at).toLocaleDateString(undefined, {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
-                    </div>
-                  </div>
-
-                  
-                </div>
-              </div>
+              <TicketCard
+                participantNumber={participant.participant_number}
+                studentName={user?.name}
+                joinedAt={participant.joined_at}
+              />
             </motion.div>
           )}
         </div>

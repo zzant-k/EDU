@@ -216,15 +216,15 @@ INSERT INTO users (id, name, password, role, created_at, updated_at) VALUES
 -- Reset sequence to 11
 SELECT setval('users_id_seq', 11, true);
 
-INSERT INTO universities (id, name, description, website, location, qr_token, admin_id, created_at, updated_at) VALUES
-(1, 'Binus University', 'A world-class university in Jakarta specializing in computing, business, and creative technology.', 'https://binus.ac.id', 'Main Hall - Booth A1', 'binus-booth-uuid-token-01', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(2, 'Universitas Indonesia', 'One of the oldest and most prestigious national universities in Indonesia, located in Depok.', 'https://ui.ac.id', 'Main Hall - Booth A2', 'ui-booth-uuid-token-02', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(3, 'Institut Teknologi Bandung', 'Premier technology and engineering research university located in Bandung, West Java.', 'https://itb.ac.id', 'Main Hall - Booth B1', 'itb-booth-uuid-token-03', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(4, 'Universitas Gadjah Mada', 'A leading public research university in Yogyakarta, renowned for its diverse programs and research.', 'https://ugm.ac.id', 'Main Hall - Booth B2', 'ugm-booth-uuid-token-04', 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(5, 'Universitas Airlangga', 'Top public university in Surabaya with a strong reputation in medicine and social sciences.', 'https://unair.ac.id', 'Annex Hall - Booth C1', 'unair-booth-uuid-token-05', 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(6, 'Universitas Padjadjaran', 'Renowned public university in Bandung offering highly-rated programs in medicine, law, and communications.', 'https://unpad.ac.id', 'Annex Hall - Booth C2', 'unpad-booth-uuid-token-06', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(7, 'Universitas Diponegoro', 'A leading university in Semarang known for engineering, marine sciences, and law.', 'https://undip.ac.id', 'Annex Hall - Booth D1', 'undip-booth-uuid-token-07', 9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(8, 'Universitas Brawijaya', 'A dynamic public university in Malang with excellent agricultural, administrative, and engineering programs.', 'https://ub.ac.id', 'Annex Hall - Booth D2', 'ub-booth-uuid-token-08', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+INSERT INTO universities (id, name, logo, description, website, location, qr_token, admin_id, created_at, updated_at) VALUES
+(1, 'Binus University', '/logos/binus.png', 'A world-class university in Jakarta specializing in computing, business, and creative technology.', 'https://binus.ac.id', 'Main Hall - Booth A1', 'binus-booth-uuid-token-01', 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 'Universitas Indonesia', '/logos/ui.png', 'One of the oldest and most prestigious national universities in Indonesia, located in Depok.', 'https://ui.ac.id', 'Main Hall - Booth A2', 'ui-booth-uuid-token-02', 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 'Institut Teknologi Bandung', '/logos/itb.png', 'Premier technology and engineering research university located in Bandung, West Java.', 'https://itb.ac.id', 'Main Hall - Booth B1', 'itb-booth-uuid-token-03', 5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(4, 'Universitas Gadjah Mada', '/logos/ugm.png', 'A leading public research university in Yogyakarta, renowned for its diverse programs and research.', 'https://ugm.ac.id', 'Main Hall - Booth B2', 'ugm-booth-uuid-token-04', 6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(5, 'Universitas Airlangga', '/logos/unair.png', 'Top public university in Surabaya with a strong reputation in medicine and social sciences.', 'https://unair.ac.id', 'Annex Hall - Booth C1', 'unair-booth-uuid-token-05', 7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(6, 'Universitas Padjadjaran', '/logos/unpad.png', 'Renowned public university in Bandung offering highly-rated programs in medicine, law, and communications.', 'https://unpad.ac.id', 'Annex Hall - Booth C2', 'unpad-booth-uuid-token-06', 8, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(7, 'Universitas Diponegoro', '/logos/undip.png', 'A leading university in Semarang known for engineering, marine sciences, and law.', 'https://undip.ac.id', 'Annex Hall - Booth D1', 'undip-booth-uuid-token-07', 9, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(8, 'Universitas Brawijaya', '/logos/ub.png', 'A dynamic public university in Malang with excellent agricultural, administrative, and engineering programs.', 'https://ub.ac.id', 'Annex Hall - Booth D2', 'ub-booth-uuid-token-08', 10, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Reset sequence to 9
 SELECT setval('universities_id_seq', 9, true);
