@@ -1037,3 +1037,73 @@ export const universityAdminService = {
     }))
   },
 }
+
+// ----------------------------------------------------------------------
+// Feedback Service
+// ----------------------------------------------------------------------
+export const feedbackService = {
+  async submitFeedback(
+    userId: number,
+    studentName: string,
+    data: { content: string; rating?: number; category?: string }
+  ) {
+    if (!data.content || !data.content.trim()) {
+      const err: any = new Error('Isi feedback tidak boleh kosong.')
+      err.response = { data: { message: 'Isi feedback tidak boleh kosong.' } }
+      throw err
+    }
+
+    const { data: feedback, error } = await supabase
+      .from('feedbacks')
+      .insert([
+        {
+          user_id: userId,
+          student_name: studentName,
+          category: data.category || 'Umum',
+          rating: data.rating || 5,
+          content: data.content.trim(),
+          created_at: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single()
+
+    if (error) throw error
+    return {
+      message: 'Feedback berhasil dikirim. Terima kasih atas masukanmu!',
+      feedback,
+    }
+  },
+
+  async getMyFeedbacks(userId: number) {
+    const { data, error } = await supabase
+      .from('feedbacks')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return data || []
+  },
+
+  async getAllFeedbacks() {
+    const { data, error } = await supabase
+      .from('feedbacks')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return data || []
+  },
+
+  async deleteFeedback(id: number) {
+    const { error } = await supabase
+      .from('feedbacks')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+    return { message: 'Feedback berhasil dihapus.' }
+  },
+}
+

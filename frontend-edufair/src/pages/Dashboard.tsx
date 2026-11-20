@@ -8,6 +8,7 @@ import { Skeleton } from '../components/ui/Skeleton'
 import { EmptyState } from '../components/ui/EmptyState'
 import { motion } from 'framer-motion'
 import { getLogoUrl } from '../utils/image'
+import { StudentFeedbackModal } from '../components/StudentFeedbackModal'
 
 interface University {
   id: number
@@ -360,6 +361,9 @@ export const Dashboard: React.FC = () => {
           ))}
         </motion.div>
       )}
+
+      {/* Floating Feedback Bubble */}
+      <StudentFeedbackModal />
     </div>
   )
 }

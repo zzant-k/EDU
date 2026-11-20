@@ -242,3 +242,19 @@ CREATE POLICY "Public read universities" ON universities FOR SELECT TO PUBLIC US
 CREATE POLICY "Public read points" ON university_points FOR SELECT TO PUBLIC USING (true);
 CREATE POLICY "Public read winners" ON winners FOR SELECT TO PUBLIC USING (true);
 
+-- Feedbacks table
+CREATE TABLE IF NOT EXISTS feedbacks (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    student_name VARCHAR(255) NOT NULL,
+    category VARCHAR(100) DEFAULT 'Umum',
+    rating INT DEFAULT 5,
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE feedbacks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Public insert feedbacks" ON feedbacks FOR INSERT TO PUBLIC WITH CHECK (true);
+CREATE POLICY "Public read feedbacks" ON feedbacks FOR SELECT TO PUBLIC USING (true);
+CREATE POLICY "Public delete feedbacks" ON feedbacks FOR DELETE TO PUBLIC USING (true);
+
+

@@ -3,6 +3,7 @@ import {
   studentService,
   superAdminService,
   universityAdminService,
+  feedbackService,
   getStoredUser,
 } from './supabaseService'
 
@@ -49,6 +50,17 @@ export const apiClient = {
     if (cleanUrl === '/student/participant') {
       if (!user) throw new Error('Unauthenticated')
       const data = await studentService.getParticipant(user.id)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/student/feedbacks') {
+      if (!user) throw new Error('Unauthenticated')
+      const data = await feedbackService.getMyFeedbacks(user.id)
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/superadmin/feedbacks') {
+      const data = await feedbackService.getAllFeedbacks()
       return wrapResponse(data)
     }
 
@@ -162,6 +174,12 @@ export const apiClient = {
       return wrapResponse(res)
     }
 
+    if (cleanUrl === '/student/feedbacks') {
+      if (!user) throw new Error('Unauthenticated')
+      const res = await feedbackService.submitFeedback(user.id, user.name || 'Siswa', data)
+      return wrapResponse(res)
+    }
+
     // 3. SuperAdmin Actions
     if (cleanUrl === '/superadmin/university-admins') {
       const res = await superAdminService.storeUniversityAdmin(data)
@@ -224,6 +242,12 @@ export const apiClient = {
     if (cleanUrl.startsWith('/superadmin/lucky-draw/winners/')) {
       const id = Number(cleanUrl.replace('/superadmin/lucky-draw/winners/', ''))
       const res = await superAdminService.destroyWinner(id)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl.startsWith('/superadmin/feedbacks/')) {
+      const id = Number(cleanUrl.replace('/superadmin/feedbacks/', ''))
+      const res = await feedbackService.deleteFeedback(id)
       return wrapResponse(res)
     }
 
