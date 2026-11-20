@@ -6,7 +6,7 @@ import { Card } from '../components/ui/Card'
 import { Button } from '../components/ui/Button'
 import { Skeleton } from '../components/ui/Skeleton'
 import { EmptyState } from '../components/ui/EmptyState'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { getLogoUrl } from '../utils/image'
 import { StudentFeedbackModal } from '../components/StudentFeedbackModal'
 import { TicketCard } from '../components/TicketCard'
@@ -44,6 +44,7 @@ export const Dashboard: React.FC = () => {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<'all' | 'visited' | 'remaining' | 'map'>('all')
   const navigate = useNavigate()
+  const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     fetchDashboard()
@@ -104,61 +105,85 @@ export const Dashboard: React.FC = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05
-      }
-    }
+        staggerChildren: shouldReduceMotion ? 0 : 0.07,
+        delayChildren: 0.08,
+      },
+    },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 15 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 100 } }
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring' as const,
+        damping: 20,
+        stiffness: 145,
+      },
+    },
   }
 
   return (
     <div className="flex flex-col gap-5 pb-6">
 
-      {/* Welcome Card & Progress */}
-      <Card className="bg-surface border border-border-custom shadow-sm p-6 rounded-2xl flex flex-col gap-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col gap-1 text-left">
-            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Paspor Mahasiswa</span>
-            <h2 className="text-2xl font-black text-text-primary tracking-tight font-sans">Halo, {data.student_name}</h2>
-            <p className="text-xs text-text-secondary leading-relaxed mt-1 max-w-[280px]">
-              {data.remaining_count === 0 
-                ? "Selamat! Anda telah membuka tiket Undian." 
-                : `Kunjungi ${data.remaining_count} stan universitas lagi untuk mengikuti Undian.`}
-            </p>
+      {/* Welcome Card & Progress (P-5 Slow in, slow out & P-10 Depth) */}
+      <motion.div
+        initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.52, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <Card className="bg-surface border border-border-custom shadow-sm hover:shadow-md transition-shadow duration-250 p-6 rounded-2xl flex flex-col gap-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-1 text-left">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Paspor Mahasiswa</span>
+              <h2 className="text-2xl font-black text-text-primary tracking-tight font-sans">Halo, {data.student_name}</h2>
+              <p className="text-xs text-text-secondary leading-relaxed mt-1 max-w-[280px]">
+                {data.remaining_count === 0 
+                  ? "Selamat! Anda telah membuka tiket Undian." 
+                  : `Kunjungi ${data.remaining_count} stan universitas lagi untuk mengikuti Undian.`}
+              </p>
+            </div>
+            
+            <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
+              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Kemajuan</span>
+              <span className="text-2xl font-black text-primary leading-none">{data.percentage}%</span>
+            </div>
           </div>
-          
-          <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
-            <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">Kemajuan</span>
-            <span className="text-2xl font-black text-primary leading-none">{data.percentage}%</span>
-          </div>
-        </div>
 
-        {/* Custom Progress Bar */}
-        <div className="w-full flex flex-col gap-1.5">
-          <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-            <div 
-              className="bg-primary h-full rounded-full transition-all duration-500 ease-out" 
-              style={{ width: `${data.percentage}%` }}
-            />
+          {/* Custom Progress Bar with smooth organic transition (P-5) */}
+          <div className="w-full flex flex-col gap-1.5">
+            <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+              <motion.div 
+                className="bg-primary h-full rounded-full" 
+                initial={shouldReduceMotion ? { width: `${data.percentage}%` } : { width: '0%' }}
+                animate={{ width: `${data.percentage}%` }}
+                transition={{ duration: 1.25, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] font-semibold text-text-secondary">
+              <span>{data.universities.filter(u => u.visited).length} Dikunjungi</span>
+              <span>{data.remaining_count} Tersisa</span>
+            </div>
           </div>
-          <div className="flex justify-between text-[10px] font-semibold text-text-secondary">
-            <span>{data.universities.filter(u => u.visited).length} Dikunjungi</span>
-            <span>{data.remaining_count} Tersisa</span>
-          </div>
-        </div>
 
-        {/* Action Button for Scanner */}
-        <Button
-          onClick={() => navigate('/scan')}
-          className="w-full sm:w-auto sm:px-12 sm:self-center py-3.5 h-auto flex items-center justify-center gap-2 font-bold text-xs shadow-sm rounded-xl"
-        >
-          <Scan size={14} />
-          Pindai QR Code Universitas
-        </Button>
-      </Card>
+          {/* Action Button for Scanner (P-1 Squash & Stretch, P-8 Snappy Timing) */}
+          <motion.div
+            whileHover={shouldReduceMotion ? {} : { scale: 1.015, y: -1 }}
+            whileTap={shouldReduceMotion ? {} : { scale: 0.98, y: 0 }}
+            transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full sm:w-auto sm:self-center"
+          >
+            <Button
+              onClick={() => navigate('/scan')}
+              className="w-full sm:px-12 py-3.5 h-auto flex items-center justify-center gap-2 font-bold text-xs shadow-sm rounded-xl"
+            >
+              <Scan size={14} />
+              Pindai QR Code Universitas
+            </Button>
+          </motion.div>
+        </Card>
+      </motion.div>
 
       
 
@@ -176,32 +201,44 @@ export const Dashboard: React.FC = () => {
             </p>
           </div>
         ) : (
-          <Card className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-900 border border-amber-300 p-5 rounded-2xl flex flex-col gap-4 shadow-md">
-            {/* Decorative ticket cutout circles */}
-            <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-6 h-6 rounded-full bg-slate-50 border-r border-amber-200 z-10"></div>
-            <div className="absolute top-1/2 -translate-y-1/2 -right-3 w-6 h-6 rounded-full bg-slate-50 border-l border-amber-200 z-10"></div>
-            
-            <div className="flex justify-between items-start">
-              <div className="flex flex-col gap-1 text-left">
-                <span className="text-[9px] font-black uppercase tracking-widest text-amber-900/60">Kupon Siap Ditukar</span>
-                <h4 className="text-base font-black tracking-tight leading-none text-slate-950">LUCKY DRAW TICKET</h4>
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 1 } : { scale: 0.96, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', damping: 18, stiffness: 140 }}
+          >
+            <Card className="relative overflow-hidden bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-900 border border-amber-300 p-5 rounded-2xl flex flex-col gap-4 shadow-md">
+              {/* Decorative ticket cutout circles */}
+              <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-6 h-6 rounded-full bg-slate-50 border-r border-amber-200 z-10"></div>
+              <div className="absolute top-1/2 -translate-y-1/2 -right-3 w-6 h-6 rounded-full bg-slate-50 border-l border-amber-200 z-10"></div>
+              
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col gap-1 text-left">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-amber-900/60">Kupon Siap Ditukar</span>
+                  <h4 className="text-base font-black tracking-tight leading-none text-slate-950">LUCKY DRAW TICKET</h4>
+                </div>
               </div>
-            </div>
 
-            <div className="w-full border-t border-dashed border-amber-900/20 my-1"></div>
+              <div className="w-full border-t border-dashed border-amber-900/20 my-1"></div>
 
-            <div className="flex flex-col gap-3">
-              <div className="text-left">
-                <p className="text-xs font-semibold text-slate-800">Semua stan telah dikunjungi! Segera tukarkan kupon Anda untuk mendapatkan tiket resmi.</p>
+              <div className="flex flex-col gap-3">
+                <div className="text-left">
+                  <p className="text-xs font-semibold text-slate-800">Semua stan telah dikunjungi! Segera tukarkan kupon Anda untuk mendapatkan tiket resmi.</p>
+                </div>
+                <motion.div
+                  whileHover={shouldReduceMotion ? {} : { scale: 1.02 }}
+                  whileTap={shouldReduceMotion ? {} : { scale: 0.97 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Button
+                    onClick={handleJoinDraw}
+                    className="w-full bg-slate-950 hover:bg-slate-900 text-white font-extrabold text-xs py-3 rounded-xl shadow-md border-0"
+                  >
+                    Klaim Tiket Undian Sekarang
+                  </Button>
+                </motion.div>
               </div>
-              <Button
-                onClick={handleJoinDraw}
-                className="w-full bg-slate-950 hover:bg-slate-900 text-white font-extrabold text-xs py-3 rounded-xl shadow-md border-0"
-              >
-                Klaim Tiket Undian Sekarang
-              </Button>
-            </div>
-          </Card>
+            </Card>
+          </motion.div>
         )
       ) : (
         <Card className="relative overflow-hidden bg-slate-50 border border-dashed border-slate-300 p-5 rounded-2xl flex flex-col gap-4 shadow-sm bg-opacity-50">
@@ -245,44 +282,32 @@ export const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Filter Badges */}
+        {/* Filter Badges (P-1 Squash & Stretch, P-8 Snappy Timing) */}
         <div className="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-1.5 text-xs font-bold rounded-xl border transition whitespace-nowrap flex-shrink-0 ${filter === 'all'
-                ? 'bg-primary text-white border-primary shadow-sm'
-                : 'bg-surface text-text-secondary border-border-custom hover:bg-slate-100'
-              }`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setFilter('visited')}
-            className={`px-4 py-1.5 text-xs font-bold rounded-xl border transition whitespace-nowrap flex-shrink-0 ${filter === 'visited'
-                ? 'bg-primary text-white border-primary shadow-sm'
-                : 'bg-surface text-text-secondary border-border-custom hover:bg-slate-100'
-              }`}
-          >
-            Stamped
-          </button>
-          <button
-            onClick={() => setFilter('remaining')}
-            className={`px-4 py-1.5 text-xs font-bold rounded-xl border transition whitespace-nowrap flex-shrink-0 ${filter === 'remaining'
-                ? 'bg-primary text-white border-primary shadow-sm'
-                : 'bg-surface text-text-secondary border-border-custom hover:bg-slate-100'
-              }`}
-          >
-            Remaining
-          </button>
-          <button
-            onClick={() => setFilter('map')}
-            className={`px-4 py-1.5 text-xs font-bold rounded-xl border transition whitespace-nowrap flex-shrink-0 ${filter === 'map'
-                ? 'bg-primary text-white border-primary shadow-sm'
-                : 'bg-surface text-text-secondary border-border-custom hover:bg-slate-100'
-              }`}
-          >
-            Maps
-          </button>
+          {(['all', 'visited', 'remaining', 'map'] as const).map((key) => {
+            const labels = {
+              all: 'All',
+              visited: 'Stamped',
+              remaining: 'Remaining',
+              map: 'Maps',
+            }
+            const active = filter === key
+            return (
+              <motion.button
+                key={key}
+                onClick={() => setFilter(key)}
+                whileTap={shouldReduceMotion ? {} : { scale: 0.94 }}
+                transition={{ duration: 0.11 }}
+                className={`px-4 py-1.5 text-xs font-bold rounded-xl border transition-all whitespace-nowrap flex-shrink-0 ${
+                  active
+                    ? 'bg-primary text-white border-primary shadow-sm'
+                    : 'bg-surface text-text-secondary border-border-custom hover:bg-slate-100'
+                }`}
+              >
+                {labels[key]}
+              </motion.button>
+            )
+          })}
         </div>
       </div>
 
@@ -291,6 +316,7 @@ export const Dashboard: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col gap-3"
         >
           <Card className="p-4 border border-border-custom bg-surface rounded-2xl flex flex-col gap-4">
@@ -322,15 +348,21 @@ export const Dashboard: React.FC = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-5"
         >
           {filteredUniversities.map((uni) => (
-            <motion.div key={uni.id} variants={itemVariants}>
+            <motion.div
+              key={uni.id}
+              variants={itemVariants}
+              whileHover={shouldReduceMotion ? {} : { y: -2, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
+              whileTap={shouldReduceMotion ? {} : { scale: 0.985, transition: { duration: 0.12 } }}
+              className="group"
+            >
               <Card
                 hoverable
                 onClick={() => navigate(`/universities/${uni.id}`)}
-                className="flex items-center justify-between p-3 sm:p-4 border border-border-custom hover:border-primary/10 gap-2"
+                className="flex items-center justify-between p-3 sm:p-4 border border-border-custom hover:border-primary/20 hover:shadow-md transition-all duration-200 gap-2 cursor-pointer"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {/* University Logo frame */}
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-slate-100 border border-border-custom overflow-hidden flex items-center justify-center p-1.5 flex-shrink-0">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-slate-100 border border-border-custom overflow-hidden flex items-center justify-center p-1.5 flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
                     {uni.logo ? (
                       <img
                         src={getLogoUrl(uni.logo)}
@@ -345,7 +377,9 @@ export const Dashboard: React.FC = () => {
                   </div>
 
                   <div className="flex flex-col gap-0.5 sm:gap-1 flex-1 min-w-0">
-                    <h4 className="text-sm font-bold text-text-primary truncate">{uni.name}</h4>
+                    <h4 className="text-sm font-bold text-text-primary truncate group-hover:text-primary transition-colors duration-200">
+                      {uni.name}
+                    </h4>
                     <div className="flex items-center gap-1 text-[11px] text-text-secondary truncate">
                       <MapPin size={11} className="flex-shrink-0" />
                       <span className="truncate">{uni.location || 'No location set'}</span>
@@ -354,13 +388,16 @@ export const Dashboard: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-                  {/* Star button has been removed from here */}
                   {uni.visited ? (
                     <CheckCircle2 size={20} className="text-success" />
                   ) : (
                     <Clock size={20} className="text-text-secondary/40" />
                   )}
-                  <ChevronRight size={18} className="text-text-secondary/30 hidden sm:block" />
+                  {/* P-7 (Secondary action): subtle chevron slide on hover */}
+                  <ChevronRight
+                    size={18}
+                    className="text-text-secondary/30 hidden sm:block group-hover:translate-x-1 group-hover:text-primary transition-all duration-200"
+                  />
                 </div>
               </Card>
             </motion.div>
