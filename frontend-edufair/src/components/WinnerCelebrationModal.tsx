@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, X, Sparkles, Gift } from 'lucide-react'
+import { X, Sparkles, Gift } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { apiClient } from '../api/client'
 import { sendDeviceNotification } from '../utils/deviceNotification'
@@ -112,16 +112,15 @@ export const WinnerCelebrationModal: React.FC = () => {
         <motion.div
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="fixed bottom-24 lg:bottom-6 right-4 sm:right-6 z-40 max-w-xs"
+          className="fixed bottom-44 right-5 sm:bottom-44 sm:right-6 lg:bottom-28 lg:right-8 z-40 max-w-xs select-none"
         >
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center gap-2.5 bg-[#5468ff] text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-xl hover:bg-[#4357ec] active:scale-95 transition-all"
+            className="flex items-center gap-2.5 bg-black hover:bg-slate-900 border border-slate-800 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-2xl active:scale-95 transition-all cursor-pointer"
           >
-            
-            <div className="flex flex-col text-left leading-none">
-              <span className="text-[10px] text-white/80 uppercase font-semibold">Pemenang Doorprize</span>
-              <span className="truncate max-w-[150px] font-bold">{winner.prize}</span>
+            <div className="flex flex-col text-left leading-tight">
+              <span className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider">Pemenang Doorprize</span>
+              <span className="truncate max-w-[145px] font-black text-xs text-white">{winner.prize}</span>
             </div>
           </button>
         </motion.div>
