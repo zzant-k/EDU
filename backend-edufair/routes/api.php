@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/join-lucky-draw', [StudentController::class, 'joinLuckyDraw']);
         Route::get('/participant', [StudentController::class, 'getParticipant']);
         Route::get('/lucky-draw/winners', [SuperAdminController::class, 'getWinners']);
+        Route::get('/announcements', [StudentController::class, 'getActiveAnnouncements']);
     });
 
     // Super Admin specific routes (Guarded by superadmin middleware)
@@ -54,6 +55,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/lucky-draw/spin', [SuperAdminController::class, 'spinLuckyDraw']);
         Route::get('/lucky-draw/winners', [SuperAdminController::class, 'getWinners']);
         Route::delete('/lucky-draw/winners/{id}', [SuperAdminController::class, 'destroyWinner']);
+
+        // Announcements Broadcast
+        Route::get('/announcements', [SuperAdminController::class, 'listAnnouncements']);
+        Route::post('/announcements', [SuperAdminController::class, 'storeAnnouncement']);
+        Route::put('/announcements/{id}/toggle', [SuperAdminController::class, 'toggleAnnouncement']);
+        Route::delete('/announcements/{id}', [SuperAdminController::class, 'destroyAnnouncement']);
     });
 
     // University Admin specific routes (Guarded by university_admin middleware)

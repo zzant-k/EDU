@@ -6,6 +6,7 @@ use App\Models\University;
 use App\Models\StudentVisit;
 use App\Models\LuckyDrawParticipant;
 use App\Models\UniversityPoint;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
@@ -247,5 +248,14 @@ class StudentController extends Controller
             ->get(['id', 'name', 'logo']);
 
         return response()->json($leaderboard, Response::HTTP_OK);
+    }
+
+    public function getActiveAnnouncements()
+    {
+        $announcements = Announcement::where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($announcements, Response::HTTP_OK);
     }
 }

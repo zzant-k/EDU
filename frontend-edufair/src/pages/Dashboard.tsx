@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, MapPin, CheckCircle2, ChevronRight, Scan, Clock, Lock } from 'lucide-react'
 import { apiClient } from '../api/client'
@@ -70,6 +70,19 @@ export const Dashboard: React.FC = () => {
     }
   }
 
+  const filteredUniversities = useMemo(() => {
+    if (!data) return []
+    const q = search.trim().toLowerCase()
+    return data.universities.filter((uni) => {
+      const matchesSearch = !q || uni.name.toLowerCase().includes(q) ||
+        (uni.description && uni.description.toLowerCase().includes(q))
+
+      if (filter === 'visited') return matchesSearch && uni.visited
+      if (filter === 'remaining') return matchesSearch && !uni.visited
+      return matchesSearch
+    })
+  }, [data, search, filter])
+
   if (loading) {
     return (
       <div className="flex flex-col gap-6">
@@ -91,35 +104,25 @@ export const Dashboard: React.FC = () => {
 
   if (!data) return null
 
-  const filteredUniversities = data.universities.filter((uni) => {
-    const matchesSearch = uni.name.toLowerCase().includes(search.toLowerCase()) ||
-      (uni.description && uni.description.toLowerCase().includes(search.toLowerCase()))
-
-    if (filter === 'visited') return matchesSearch && uni.visited
-    if (filter === 'remaining') return matchesSearch && !uni.visited
-    return matchesSearch
-  })
-
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: shouldReduceMotion ? 0 : 0.07,
-        delayChildren: 0.08,
+        staggerChildren: shouldReduceMotion ? 0 : 0.03,
+        delayChildren: 0.04,
       },
     },
   }
 
   const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 12 },
     show: {
       opacity: 1,
       y: 0,
       transition: {
-        type: 'spring' as const,
-        damping: 20,
-        stiffness: 145,
+        duration: 0.35,
+        ease: [0.16, 1, 0.3, 1] as const,
       },
     },
   }
@@ -329,6 +332,8 @@ export const Dashboard: React.FC = () => {
               <img
                 src="/edufair_floor_plan.png"
                 alt="EduFair Floor Plan Map"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-contain rounded-lg"
               />
             </div>
@@ -353,12 +358,12 @@ export const Dashboard: React.FC = () => {
               variants={itemVariants}
               whileHover={shouldReduceMotion ? {} : { y: -2, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
               whileTap={shouldReduceMotion ? {} : { scale: 0.985, transition: { duration: 0.12 } }}
-              className="group"
+              className="group will-change-transform"
             >
               <Card
-                hoverable
+                hoverable={false}
                 onClick={() => navigate(`/universities/${uni.id}`)}
-                className="flex items-center justify-between p-3 sm:p-4 border border-border-custom hover:border-primary/20 hover:shadow-md transition-all duration-200 gap-2 cursor-pointer"
+                className="flex items-center justify-between p-3 sm:p-4 border border-border-custom hover:border-primary/20 hover:shadow-md transition-[border-color,box-shadow] duration-200 gap-2 cursor-pointer"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   {/* University Logo frame */}
@@ -367,6 +372,8 @@ export const Dashboard: React.FC = () => {
                       <img
                         src={getLogoUrl(uni.logo)}
                         alt={uni.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;

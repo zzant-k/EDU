@@ -1112,3 +1112,96 @@ export const feedbackService = {
   },
 }
 
+// ----------------------------------------------------------------------
+// Announcement Service
+// ----------------------------------------------------------------------
+export const announcementService = {
+  async getActiveAnnouncements() {
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.warn('getActiveAnnouncements error:', error)
+      return []
+    }
+    return data || []
+  },
+
+  async getAllAnnouncements() {
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    return data || []
+  },
+
+  async createAnnouncement(data: { title?: string; message: string; type?: string; is_active?: boolean }) {
+    if (!data.message || !data.message.trim()) {
+      const err: any = new Error('Pesan pengumuman tidak boleh kosong.')
+      err.response = { data: { message: 'Pesan pengumuman tidak boleh kosong.' } }
+      throw err
+    }
+
+    const now = new Date().toISOString()
+    const { data: created, error } = await supabase
+      .from('announcements')
+      .insert([
+        {
+          title: data.title?.trim() || null,
+          message: data.message.trim(),
+          type: data.type || 'info',
+          is_active: data.is_active ?? true,
+          created_at: now,
+          updated_at: now,
+        },
+      ])
+      .select()
+      .single()
+
+    if (error) throw error
+    return {
+      message: 'Pengumuman berhasil disiarkan!',
+      data: created,
+    }
+  },
+
+  async toggleAnnouncement(id: number) {
+    const { data: current, error: getError } = await supabase
+      .from('announcements')
+      .select('is_active')
+      .eq('id', id)
+      .single()
+
+    if (getError) throw getError
+
+    const nextState = !current.is_active
+    const { data: updated, error: updateError } = await supabase
+      .from('announcements')
+      .update({ is_active: nextState, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (updateError) throw updateError
+    return {
+      message: 'Status pengumuman diperbarui!',
+      data: updated,
+    }
+  },
+
+  async deleteAnnouncement(id: number) {
+    const { error } = await supabase
+      .from('announcements')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+    return { message: 'Pengumuman berhasil dihapus.' }
+  },
+}
+

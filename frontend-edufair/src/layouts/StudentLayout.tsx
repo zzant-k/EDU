@@ -1,38 +1,47 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import { Home, Scan, User, Ticket, Star } from 'lucide-react'
+import { BroadcastBanner } from '../components/BroadcastBanner'
+
 export const StudentLayout: React.FC = () => {
   const [showNav, setShowNav] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
+  const lastScrollY = useRef(0)
+  const ticking = useRef(false)
   const location = useLocation()
   const isPointPage = location.pathname === '/point'
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY
+          const diff = currentScrollY - lastScrollY.current
 
-      // Sembunyikan jika scroll ke bawah lebih dari 50px
-      if (currentScrollY > lastScrollY && currentScrollY > 50) {
-        setShowNav(false)
+          // Threshold 15px scroll untuk cegah micro-jitter & re-render beruntun saat scrolling
+          if (Math.abs(diff) > 15) {
+            if (currentScrollY > lastScrollY.current && currentScrollY > 70) {
+              setShowNav((prev) => (prev ? false : prev))
+            } else if (currentScrollY < lastScrollY.current) {
+              setShowNav((prev) => (!prev ? true : prev))
+            }
+            lastScrollY.current = currentScrollY
+          }
+          ticking.current = false
+        })
+        ticking.current = true
       }
-      // Munculkan lagi jika scroll ke atas
-      else if (currentScrollY < lastScrollY) {
-        setShowNav(true)
-      }
-
-      setLastScrollY(currentScrollY)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScrollY])
+  }, [])
 
   return (
     <div className="min-h-screen bg-bg flex justify-center w-full">
       <div className="w-full max-w-md lg:max-w-full bg-slate-50 min-h-screen flex flex-col lg:flex-row relative shadow-lg border-x lg:border-x-0 border-border-custom bg-opacity-70 transition-all duration-300">
 
         {/* Desktop Sidebar / Mobile Bottom Nav */}
-        <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-[360px] bg-surface/90 backdrop-blur-xl border border-border-custom/80 shadow-lg rounded-3xl py-2 px-3 z-50 grid grid-cols-5 items-center justify-items-center transition-all duration-300
+        <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-[360px] bg-surface/90 backdrop-blur-md border border-border-custom/80 shadow-lg rounded-3xl py-2 px-3 z-50 grid grid-cols-5 items-center justify-items-center will-change-transform transition-transform duration-200
           lg:static lg:translate-x-0 lg:w-64 lg:max-w-[256px] lg:h-screen lg:flex lg:flex-col lg:justify-start lg:gap-2 lg:rounded-none lg:border-r lg:border-y-0 lg:border-l-0 lg:shadow-none lg:pt-8 lg:px-4 lg:bg-surface">
 
           {/* Logo only visible on Desktop */}
@@ -107,6 +116,9 @@ export const StudentLayout: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-h-screen w-full lg:max-w-[calc(100vw-256px)]">
+          {/* Live Panitia Broadcast Banner */}
+          <BroadcastBanner />
+
           {/* Header bar (Mobile only now since Desktop has sidebar logo) */}
           {!isPointPage && (
             <header className={`lg:hidden bg-surface sticky top-0 z-40 border-b border-border-custom px-6 py-4 flex items-center justify-between transition-all duration-300 ${showNav ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>

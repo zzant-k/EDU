@@ -7,6 +7,7 @@ use App\Models\University;
 use App\Models\StudentVisit;
 use App\Models\LuckyDrawParticipant;
 use App\Models\Winner;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -402,5 +403,55 @@ class SuperAdminController extends Controller
             ->get();
 
         return response()->json($leaderboard, Response::HTTP_OK);
+    }
+
+    public function listAnnouncements()
+    {
+        $announcements = Announcement::orderBy('created_at', 'desc')->get();
+        return response()->json($announcements, Response::HTTP_OK);
+    }
+
+    public function storeAnnouncement(Request $request)
+    {
+        $request->validate([
+            'message' => 'required|string',
+            'title' => 'nullable|string|max:255',
+            'type' => 'required|in:info,urgent,event',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $announcement = Announcement::create([
+            'title' => $request->title,
+            'message' => $request->message,
+            'type' => $request->type ?? 'info',
+            'is_active' => $request->is_active ?? true,
+        ]);
+
+        return response()->json([
+            'message' => 'Pengumuman berhasil dibuat!',
+            'data' => $announcement
+        ], Response::HTTP_CREATED);
+    }
+
+    public function toggleAnnouncement($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+        $announcement->is_active = !$announcement->is_active;
+        $announcement->save();
+
+        return response()->json([
+            'message' => 'Status pengumuman diperbarui!',
+            'data' => $announcement
+        ], Response::HTTP_OK);
+    }
+
+    public function destroyAnnouncement($id)
+    {
+        $announcement = Announcement::findOrFail($id);
+        $announcement->delete();
+
+        return response()->json([
+            'message' => 'Pengumuman dihapus!'
+        ], Response::HTTP_OK);
     }
 }

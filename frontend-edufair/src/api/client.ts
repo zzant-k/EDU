@@ -4,6 +4,7 @@ import {
   superAdminService,
   universityAdminService,
   feedbackService,
+  announcementService,
   getStoredUser,
 } from './supabaseService'
 
@@ -61,6 +62,16 @@ export const apiClient = {
 
     if (cleanUrl === '/superadmin/feedbacks') {
       const data = await feedbackService.getAllFeedbacks()
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/student/announcements') {
+      const data = await announcementService.getActiveAnnouncements()
+      return wrapResponse(data)
+    }
+
+    if (cleanUrl === '/superadmin/announcements') {
+      const data = await announcementService.getAllAnnouncements()
       return wrapResponse(data)
     }
 
@@ -202,6 +213,11 @@ export const apiClient = {
       return wrapResponse(res)
     }
 
+    if (cleanUrl === '/superadmin/announcements') {
+      const res = await announcementService.createAnnouncement(data)
+      return wrapResponse(res)
+    }
+
     // 4. University Admin Actions
     if (cleanUrl === '/university-admin/booth') {
       if (!user) throw new Error('Unauthenticated')
@@ -218,6 +234,13 @@ export const apiClient = {
     if (cleanUrl.startsWith('/superadmin/university-admins/')) {
       const id = Number(cleanUrl.replace('/superadmin/university-admins/', ''))
       const res = await superAdminService.updateUniversityAdmin(id, data)
+      return wrapResponse<T>(res)
+    }
+
+    if (cleanUrl.startsWith('/superadmin/announcements/') && cleanUrl.endsWith('/toggle')) {
+      const parts = cleanUrl.split('/')
+      const id = Number(parts[3])
+      const res = await announcementService.toggleAnnouncement(id)
       return wrapResponse<T>(res)
     }
 
@@ -248,6 +271,12 @@ export const apiClient = {
     if (cleanUrl.startsWith('/superadmin/feedbacks/')) {
       const id = Number(cleanUrl.replace('/superadmin/feedbacks/', ''))
       const res = await feedbackService.deleteFeedback(id)
+      return wrapResponse(res)
+    }
+
+    if (cleanUrl.startsWith('/superadmin/announcements/')) {
+      const id = Number(cleanUrl.replace('/superadmin/announcements/', ''))
+      const res = await announcementService.deleteAnnouncement(id)
       return wrapResponse(res)
     }
 

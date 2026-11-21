@@ -58,6 +58,7 @@ export const AdminLayout: React.FC = () => {
     if (path.startsWith('/superadmin/universities')) return 'EduFair Admin • Universities'
     if (path.startsWith('/superadmin/students')) return 'EduFair Admin • Students Progress'
     if (path.startsWith('/superadmin/feedbacks')) return 'EduFair Admin • Student Feedbacks'
+    if (path.startsWith('/superadmin/announcements')) return 'EduFair Admin • Broadcast & Pengumuman'
     if (path.startsWith('/superadmin/lucky-draw')) return 'EduFair Admin • Lucky Draw'
     if (path.startsWith('/superadmin/leaderboard')) return 'EduFair Admin • Leaderboard'
 
@@ -84,6 +85,7 @@ export const AdminLayout: React.FC = () => {
     { to: '/superadmin/universities', label: 'Universities', icon: Building2 },
     { to: '/superadmin/students', label: 'Students', icon: Users },
     { to: '/superadmin/feedbacks', label: 'Feedbacks', icon: MessageSquareQuote },
+    { to: '/superadmin/announcements', label: 'Broadcast', icon: Bell },
     { to: '/superadmin/lucky-draw', label: 'Lucky Draw', icon: Gift },
     { to: '/superadmin/leaderboard', label: 'Leaderboard', icon: Trophy },
   ]

@@ -24,6 +24,7 @@ import { AdminLuckyDraw } from './pages/AdminLuckyDraw'
 import { AdminUserManagement } from './pages/AdminUserManagement'
 import { AdminLeaderboard } from './pages/AdminLeaderboard'
 import { AdminFeedbackManagement } from './pages/AdminFeedbackManagement'
+import { AdminAnnouncements } from './pages/AdminAnnouncements'
 
 // University Admin Pages
 import { UniAdminDashboard } from './pages/UniAdminDashboard'
@@ -63,6 +64,7 @@ function App() {
               <Route path="/superadmin/universities" element={<UniversityManagement />} />
               <Route path="/superadmin/students" element={<StudentManagement />} />
               <Route path="/superadmin/feedbacks" element={<AdminFeedbackManagement />} />
+              <Route path="/superadmin/announcements" element={<AdminAnnouncements />} />
               <Route path="/superadmin/lucky-draw" element={<AdminLuckyDraw />} />
               <Route path="/superadmin/leaderboard" element={<AdminLeaderboard />} />
             </Route>

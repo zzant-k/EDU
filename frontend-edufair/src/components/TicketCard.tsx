@@ -145,6 +145,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({
           rotateX,
           rotateY,
           transformStyle: 'preserve-3d',
+          willChange: isHovered ? 'transform' : 'auto',
         }}
         // P-1 (Squash & stretch): gentle compression on press (area conserved)
         // P-8 (Snappy timing): 130ms press response under Doherty threshold (P-16)
@@ -165,11 +166,12 @@ export const TicketCard: React.FC<TicketCardProps> = ({
       >
         <svg
           viewBox="0 0 1024 410"
-          className="w-full h-auto block transition-all duration-200"
+          className="w-full h-auto block"
           style={{
+            transform: 'translateZ(0)',
             filter: isHovered && !shouldReduceMotion
-              ? 'drop-shadow(0 16px 28px rgba(0,0,0,0.18)) drop-shadow(0 4px 8px rgba(0,0,0,0.10))'
-              : 'drop-shadow(0 10px 20px rgba(0,0,0,0.14)) drop-shadow(0 2px 6px rgba(0,0,0,0.08))',
+              ? 'drop-shadow(0 14px 22px rgba(0,0,0,0.18))'
+              : 'drop-shadow(0 8px 16px rgba(0,0,0,0.12))',
           }}
           role="img"
           aria-label="EduFair Pass Ticket"

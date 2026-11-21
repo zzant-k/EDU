@@ -541,7 +541,7 @@ export const AdminLuckyDraw: React.FC = () => {
                   )}
                 </div>
 
-                <div className="flex gap-2 justify-center border-t border-slate-100 pt-3 mt-1">
+                <div className="flex gap-2 justify-center border-t border-slate-100 pt-3 mt-1 flex-wrap">
                   <button
                     onClick={resetDraw}
                     disabled={isDrawing || participants.length === 0}
