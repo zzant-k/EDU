@@ -434,6 +434,36 @@ export const studentService = {
     return { participant: participant || null }
   },
 
+  async checkWinnerStatus(studentId: number) {
+    const { data: winner } = await supabase
+      .from('winners')
+      .select('id, prize, created_at')
+      .eq('student_id', studentId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (!winner) {
+      return { won: false, winner: null }
+    }
+
+    const { data: participant } = await supabase
+      .from('lucky_draw_participants')
+      .select('participant_number')
+      .eq('student_id', studentId)
+      .maybeSingle()
+
+    return {
+      won: true,
+      winner: {
+        id: winner.id,
+        prize: winner.prize,
+        drawn_at: winner.created_at,
+        participant_number: participant?.participant_number || '0000',
+      },
+    }
+  },
+
   async getLeaderboard() {
     const { data: unis } = await supabase.from('universities').select('id, name, logo')
     const { data: points } = await supabase.from('university_points').select('university_id, score')

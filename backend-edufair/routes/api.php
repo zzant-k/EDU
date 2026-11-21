@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/participant', [StudentController::class, 'getParticipant']);
         Route::get('/lucky-draw/winners', [SuperAdminController::class, 'getWinners']);
         Route::get('/announcements', [StudentController::class, 'getActiveAnnouncements']);
+        Route::get('/winner-status', [StudentController::class, 'getWinnerStatus']);
     });
 
     // Super Admin specific routes (Guarded by superadmin middleware)

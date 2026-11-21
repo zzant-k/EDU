@@ -70,6 +70,12 @@ export const apiClient = {
       return wrapResponse(data)
     }
 
+    if (cleanUrl === '/student/winner-status') {
+      if (!user) throw new Error('Unauthenticated')
+      const data = await studentService.checkWinnerStatus(user.id)
+      return wrapResponse(data)
+    }
+
     if (cleanUrl === '/superadmin/announcements') {
       const data = await announcementService.getAllAnnouncements()
       return wrapResponse(data)

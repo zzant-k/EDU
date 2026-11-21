@@ -7,6 +7,7 @@ use App\Models\StudentVisit;
 use App\Models\LuckyDrawParticipant;
 use App\Models\UniversityPoint;
 use App\Models\Announcement;
+use App\Models\Winner;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
@@ -257,5 +258,27 @@ class StudentController extends Controller
             ->get();
 
         return response()->json($announcements, Response::HTTP_OK);
+    }
+
+    public function getWinnerStatus(Request $request)
+    {
+        $student = $request->user();
+        $winner = Winner::where('student_id', $student->id)->latest('created_at')->first();
+
+        if (!$winner) {
+            return response()->json(['won' => false, 'winner' => null], Response::HTTP_OK);
+        }
+
+        $participant = LuckyDrawParticipant::where('student_id', $student->id)->first();
+
+        return response()->json([
+            'won' => true,
+            'winner' => [
+                'id' => $winner->id,
+                'prize' => $winner->prize,
+                'drawn_at' => $winner->created_at,
+                'participant_number' => $participant ? $participant->participant_number : '0000',
+            ]
+        ], Response::HTTP_OK);
     }
 }

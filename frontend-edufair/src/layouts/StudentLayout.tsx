@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Outlet, NavLink, useLocation } from 'react-router-dom'
 import { Home, Scan, User, Ticket, Star } from 'lucide-react'
 import { BroadcastBanner } from '../components/BroadcastBanner'
+import { WinnerCelebrationModal } from '../components/WinnerCelebrationModal'
 
 export const StudentLayout: React.FC = () => {
   const [showNav, setShowNav] = useState(true)
@@ -135,6 +136,9 @@ export const StudentLayout: React.FC = () => {
           <main className={`flex-1 overflow-y-auto pb-28 lg:pb-10 max-w-7xl mx-auto w-full ${isPointPage ? 'p-0' : 'px-5 lg:px-10 pt-6'}`}>
             <Outlet />
           </main>
+
+          {/* Winner Celebration Modal (Real-time Lucky Draw Win Alert) */}
+          <WinnerCelebrationModal />
         </div>
 
       </div>
