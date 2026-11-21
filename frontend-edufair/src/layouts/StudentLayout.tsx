@@ -39,7 +39,7 @@ export const StudentLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-bg flex justify-center w-full">
-      <div className="w-full max-w-md lg:max-w-full bg-slate-50 min-h-screen flex flex-col lg:flex-row relative shadow-lg border-x lg:border-x-0 border-border-custom bg-opacity-70 transition-all duration-300">
+      <div className="w-full max-w-md lg:max-w-full bg-slate-50 min-h-screen flex flex-col lg:flex-row relative shadow-lg border-0 bg-opacity-70 transition-all duration-300">
 
         {/* Desktop Sidebar / Mobile Bottom Nav */}
         <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-2.5rem)] max-w-[360px] bg-surface/90 backdrop-blur-md border border-border-custom/80 shadow-lg rounded-3xl py-2 px-3 z-50 grid grid-cols-5 items-center justify-items-center will-change-transform transition-transform duration-200

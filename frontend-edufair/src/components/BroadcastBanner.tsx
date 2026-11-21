@@ -160,14 +160,9 @@ export const BroadcastBanner: React.FC = () => {
                     <div className="flex-shrink-0 flex items-center justify-center">
                       {style.icon}
                     </div>
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-extrabold tracking-wider uppercase flex-shrink-0 ${style.badge}`}
-                    >
-                      {style.badgeText}
-                    </span>
                     <div className="flex items-center gap-1.5 min-w-0 flex-1">
                       {current.title && (
-                        <span className="font-bold truncate hidden sm:inline">
+                        <span className="font-bold shrink-0">
                           {current.title}:
                         </span>
                       )}

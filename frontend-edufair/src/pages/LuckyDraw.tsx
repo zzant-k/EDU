@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Ticket, Lock, Trophy, Gift, CheckCircle2 } from 'lucide-react'
+import { Ticket, Lock, Trophy, Gift } from 'lucide-react'
 import { apiClient } from '../api/client'
 import { useAuth } from '../store/AuthContext'
 import { Card } from '../components/ui/Card'
