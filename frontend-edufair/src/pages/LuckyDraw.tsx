@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Ticket, Lock } from 'lucide-react'
+import { Ticket, Lock, Trophy, Gift, CheckCircle2 } from 'lucide-react'
 import { apiClient } from '../api/client'
 import { useAuth } from '../store/AuthContext'
 import { Card } from '../components/ui/Card'
@@ -14,9 +14,16 @@ interface ParticipantInfo {
   joined_at: string
 }
 
+interface WinnerInfo {
+  id: number
+  prize: string
+  drawn_at: string
+}
+
 export const LuckyDraw: React.FC = () => {
   const { user, refreshUser } = useAuth()
   const [participant, setParticipant] = useState<ParticipantInfo | null>(null)
+  const [winnerInfo, setWinnerInfo] = useState<WinnerInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
 
@@ -27,9 +34,15 @@ export const LuckyDraw: React.FC = () => {
   const fetchStatus = async () => {
     try {
       await refreshUser()
-      const res = await apiClient.get('/student/participant')
-      if (res.data.participant) {
-        setParticipant(res.data.participant)
+      const [partRes, winRes] = await Promise.all([
+        apiClient.get('/student/participant'),
+        apiClient.get('/student/winner-status'),
+      ])
+      if (partRes.data.participant) {
+        setParticipant(partRes.data.participant)
+      }
+      if (winRes.data?.won && winRes.data?.winner) {
+        setWinnerInfo(winRes.data.winner)
       }
     } catch (err) {
       console.error(err)
@@ -124,6 +137,49 @@ export const LuckyDraw: React.FC = () => {
               transition={{ type: 'spring', damping: 18 }}
               className="w-full flex flex-col items-center gap-4"
             >
+              {/* If student won a doorprize, show official winner certificate / keterangan */}
+              {winnerInfo && (
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="w-full bg-blue-600 rounded-3xl p-5 sm:p-6 flex flex-col gap-3.5 shadow-xl text-white"
+                >
+                  <div className="flex items-center justify-between border-b border-white/20 pb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-white text-blue-600 flex items-center justify-center font-bold shadow-xs">
+                        <Trophy size={18} />
+                      </div>
+                      <div className="flex flex-col text-left">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-200">
+                          HASIL UNDIAN RESMI
+                        </span>
+                        <span className="text-xs font-bold text-white">
+                          Selamat, Anda Pemenang!
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-black bg-white text-blue-700 px-3 py-1 rounded-full uppercase tracking-wider shadow-xs">
+                      Terpilih
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col gap-1 text-left">
+                    <span className="text-[11px] text-blue-100 font-medium flex items-center gap-1.5">
+                      <Gift size={13} className="text-blue-200" /> Hadiah yang dimenangkan:
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                      {winnerInfo.prize}
+                    </h3>
+                  </div>
+
+                  <div className="p-3.5 bg-blue-700/80 rounded-2xl flex items-start gap-2.5 text-left text-white border border-blue-400/30">
+                    <p className="text-xs text-white leading-relaxed">
+                      Silakan tunjukkan <strong className="font-bold underline">Tiket Digital #{participant.participant_number}</strong> di bawah ini ke panitia di <strong>Panggung Utama</strong> untuk klaim dan pengambilan hadiah.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
               <div className="text-center mb-1">
                 <h2 className="text-xl font-extrabold text-text-primary tracking-tight font-sans">
                   Your Entry Ticket

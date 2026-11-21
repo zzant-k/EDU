@@ -65,6 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(null)
     localStorage.removeItem('auth_token')
     localStorage.removeItem('user_info')
+    sessionStorage.clear()
   }
 
   const login = async (name: string, password: string, panelType: 'student' | 'admin' = 'student') => {
@@ -82,6 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(loggedInUser)
     localStorage.setItem('auth_token', authToken)
     localStorage.setItem('user_info', JSON.stringify(loggedInUser))
+    sessionStorage.removeItem(`winner_seen_session_${loggedInUser.id}`)
 
     return loggedInUser
   }

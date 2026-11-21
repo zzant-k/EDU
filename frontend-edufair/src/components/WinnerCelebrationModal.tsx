@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Sparkles, Gift } from 'lucide-react'
+import { X, Gift } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { apiClient } from '../api/client'
 import { sendDeviceNotification } from '../utils/deviceNotification'
@@ -70,8 +70,8 @@ export const WinnerCelebrationModal: React.FC = () => {
         const w = res.data.winner as WinnerData
         setWinner(w)
 
-        const seenKey = `winner_seen_${w.id}`
-        if (!localStorage.getItem(seenKey)) {
+        const seenKey = `winner_seen_session_${w.id}`
+        if (!sessionStorage.getItem(seenKey)) {
           setIsOpen(true)
           playCelebrationChime()
 
@@ -95,7 +95,7 @@ export const WinnerCelebrationModal: React.FC = () => {
 
   const handleDismiss = () => {
     if (winner) {
-      localStorage.setItem(`winner_seen_${winner.id}`, 'true')
+      sessionStorage.setItem(`winner_seen_session_${winner.id}`, 'true')
     }
     setIsOpen(false)
   }
@@ -106,30 +106,9 @@ export const WinnerCelebrationModal: React.FC = () => {
   }
 
   return (
-    <>
-      {/* Floating Pill if student won and dismissed (to re-open anytime) */}
-      {winner && !isOpen && (
-        <motion.div
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="fixed bottom-44 right-5 sm:bottom-44 sm:right-6 lg:bottom-28 lg:right-8 z-40 max-w-xs select-none"
-        >
-          <button
-            onClick={() => setIsOpen(true)}
-            className="flex items-center gap-2.5 bg-black hover:bg-slate-900 border border-slate-800 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-2xl active:scale-95 transition-all cursor-pointer"
-          >
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider">Pemenang Doorprize</span>
-              <span className="truncate max-w-[145px] font-black text-xs text-white">{winner.prize}</span>
-            </div>
-          </button>
-        </motion.div>
-      )}
-
-      {/* Main Congratulations Modal Popup matching exact reference design */}
-      <AnimatePresence>
-        {isOpen && winner && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <AnimatePresence>
+      {isOpen && winner && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -351,6 +330,5 @@ export const WinnerCelebrationModal: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
-    </>
-  )
-}
+    )
+  }
