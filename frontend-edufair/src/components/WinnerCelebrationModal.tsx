@@ -118,7 +118,7 @@ export const WinnerCelebrationModal: React.FC = () => {
             onClick={() => setIsOpen(true)}
             className="flex items-center gap-2.5 bg-[#5468ff] text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-xl hover:bg-[#4357ec] active:scale-95 transition-all"
           >
-            <Sparkles size={16} className="text-amber-300 animate-spin" />
+            
             <div className="flex flex-col text-left leading-none">
               <span className="text-[10px] text-white/80 uppercase font-semibold">Pemenang Doorprize</span>
               <span className="truncate max-w-[150px] font-bold">{winner.prize}</span>
@@ -151,10 +151,10 @@ export const WinnerCelebrationModal: React.FC = () => {
               {/* Close 'X' Button on top right */}
               <button
                 onClick={handleDismiss}
-                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/40 hover:bg-white/70 backdrop-blur-md flex items-center justify-center text-slate-700 transition active:scale-90"
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-xl bg-black hover:bg-slate-900 border border-slate-800 flex items-center justify-center text-white transition active:scale-90 cursor-pointer shadow-sm"
                 aria-label="Tutup"
               >
-                <X size={16} />
+                <X size={15} className="text-white" />
               </button>
 
               {/* ===== TOP SECTION: Periwinkle Lavender Gradient + Confetti + 3D Gold Trophy ===== */}
@@ -332,12 +332,10 @@ export const WinnerCelebrationModal: React.FC = () => {
                   Kamu terpilih memenangkan undian doorprize <strong className="font-bold text-[#1e2348]">"{winner.prize}"</strong>. Segera ke panggung utama!
                 </p>
 
-                {/* Center Badge: Gold Coin Pill with Ticket Number / Prize */}
-                <div className="flex items-center gap-1.5 bg-[#fef9c3] border border-[#fde047] text-[#854d0e] font-extrabold text-xs px-3.5 py-1.5 rounded-full mt-4 shadow-xs">
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-[#f59e0b] to-[#fde047] flex items-center justify-center shadow-xs">
-                    <Gift size={11} className="text-[#78350f]" />
-                  </div>
-                  <span className="tracking-wide">No. Kupon #{winner.participant_number}</span>
+                {/* Center Badge: Black Box with White Text */}
+                <div className="flex items-center gap-2 bg-black border border-slate-800 text-white font-extrabold text-xs px-4 py-2 rounded-xl mt-4 shadow-sm">
+                  <Gift size={13} className="text-white" />
+                  <span className="tracking-wider text-white font-black text-xs">#{winner.participant_number}</span>
                 </div>
 
                 {/* Action Button: Exactly matching reference "✓ COLLECT" button style */}
@@ -347,7 +345,6 @@ export const WinnerCelebrationModal: React.FC = () => {
                   onClick={handleCollect}
                   className="w-full mt-6 py-3.5 px-6 bg-[#5468ff] hover:bg-[#4357ec] text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#5468ff]/30 flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
-                  <Check size={18} strokeWidth={2.8} />
                   <span>COLLECT</span>
                 </motion.button>
               </div>
