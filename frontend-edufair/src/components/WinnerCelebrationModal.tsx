@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Trophy, Gift, Ticket, ChevronRight, X, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Check, X, Sparkles, Gift } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { apiClient } from '../api/client'
 import { sendDeviceNotification } from '../utils/deviceNotification'
@@ -25,7 +25,7 @@ const playCelebrationChime = () => {
       osc.type = 'triangle'
       osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime)
       gain.gain.setValueAtTime(0, ctx.currentTime + startTime)
-      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + startTime + 0.05)
+      gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + startTime + 0.05)
       gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + startTime + duration)
       osc.connect(gain)
       gain.connect(ctx.destination)
@@ -33,15 +33,30 @@ const playCelebrationChime = () => {
       osc.stop(ctx.currentTime + startTime + duration + 0.05)
     }
 
-    // Festive triumphant arpeggio: C5 -> E5 -> G5 -> C6
-    playNote(523.25, 0.0, 0.25)
-    playNote(659.25, 0.15, 0.25)
-    playNote(783.99, 0.30, 0.30)
-    playNote(1046.5, 0.45, 0.70)
+    // Festive arpeggio C5 -> E5 -> G5 -> C6
+    playNote(523.25, 0.0, 0.22)
+    playNote(659.25, 0.14, 0.22)
+    playNote(783.99, 0.28, 0.26)
+    playNote(1046.5, 0.42, 0.75)
   } catch {
-    // Audio synthesis not allowed without interaction; silently ignore
+    // Silently ignore if audio autoplay blocked
   }
 }
+
+// Confetti positions matching reference image
+const CONFETTI_PIECES = [
+  { top: '12%', left: '16%', rotate: 18, size: 8, delay: 0 },
+  { top: '18%', left: '82%', rotate: -25, size: 10, delay: 0.1 },
+  { top: '28%', left: '10%', rotate: 42, size: 7, delay: 0.2 },
+  { top: '34%', left: '88%', rotate: -12, size: 9, delay: 0.15 },
+  { top: '48%', left: '14%', rotate: -35, size: 8, delay: 0.25 },
+  { top: '52%', left: '84%', rotate: 28, size: 11, delay: 0.05 },
+  { top: '14%', left: '50%', rotate: 15, size: 6, delay: 0.3 },
+  { top: '22%', left: '26%', rotate: -40, size: 9, delay: 0.18 },
+  { top: '24%', left: '72%', rotate: 30, size: 7, delay: 0.22 },
+  { top: '60%', left: '22%', rotate: 20, size: 8, delay: 0.12 },
+  { top: '58%', left: '76%', rotate: -18, size: 8, delay: 0.28 },
+]
 
 export const WinnerCelebrationModal: React.FC = () => {
   const [winner, setWinner] = useState<WinnerData | null>(null)
@@ -60,21 +75,20 @@ export const WinnerCelebrationModal: React.FC = () => {
           setIsOpen(true)
           playCelebrationChime()
 
-          // Send native push notification to mobile phone lockscreen / status bar
-          sendDeviceNotification('🎉 SELAMAT! ANDA TERPILIH!', {
-            body: `Selamat! Anda berhasil mendapatkan Doorprize: "${w.prize}". Segera ke panggung utama!`,
+          // Send native mobile notification
+          sendDeviceNotification('🎉 Congratulations! Kamu Terpilih!', {
+            body: `Selamat! Kamu terpilih memenangkan doorprize: "${w.prize}". Segera menuju panggung utama!`,
             tag: `winner-${w.id}`,
           })
         }
       }
     } catch {
-      // Silently ignore network failures for winner polling
+      // Silently ignore
     }
   }
 
   useEffect(() => {
     checkWinner()
-    // Poll every 25 seconds for live lucky draw announcements
     const interval = setInterval(checkWinner, 25000)
     return () => clearInterval(interval)
   }, [])
@@ -86,14 +100,14 @@ export const WinnerCelebrationModal: React.FC = () => {
     setIsOpen(false)
   }
 
-  const handleViewTicket = () => {
+  const handleCollect = () => {
     handleDismiss()
     navigate('/lucky-draw')
   }
 
   return (
     <>
-      {/* Floating Sticky Pill if student won (gives quick access to re-open anytime) */}
+      {/* Floating Pill if student won and dismissed (to re-open anytime) */}
       {winner && !isOpen && (
         <motion.div
           initial={{ y: 50, opacity: 0 }}
@@ -102,19 +116,18 @@ export const WinnerCelebrationModal: React.FC = () => {
         >
           <button
             onClick={() => setIsOpen(true)}
-            className="flex items-center gap-2.5 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 text-slate-950 font-extrabold text-xs px-4 py-2.5 rounded-full shadow-xl border-2 border-amber-200 hover:scale-105 active:scale-95 transition-transform"
+            className="flex items-center gap-2.5 bg-[#5468ff] text-white font-bold text-xs px-4 py-2.5 rounded-full shadow-xl hover:bg-[#4357ec] active:scale-95 transition-all"
           >
-            <Trophy size={16} className="text-slate-950 fill-amber-300 animate-bounce" />
+            <Sparkles size={16} className="text-amber-300 animate-spin" />
             <div className="flex flex-col text-left leading-none">
-              <span className="text-[10px] uppercase font-black text-amber-950/70">Pemenang Doorprize</span>
+              <span className="text-[10px] text-white/80 uppercase font-semibold">Pemenang Doorprize</span>
               <span className="truncate max-w-[150px] font-bold">{winner.prize}</span>
             </div>
-            <Sparkles size={14} className="text-amber-900" />
           </button>
         </motion.div>
       )}
 
-      {/* Main Celebration Modal Popup */}
+      {/* Main Congratulations Modal Popup matching exact reference design */}
       <AnimatePresence>
         {isOpen && winner && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
@@ -124,106 +137,219 @@ export const WinnerCelebrationModal: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={handleDismiss}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-md"
+              className="fixed inset-0 bg-[#0f172a]/60 backdrop-blur-sm"
             />
 
             {/* Modal Card */}
             <motion.div
-              initial={{ scale: 0.85, opacity: 0, y: 20 }}
+              initial={{ scale: 0.9, opacity: 0, y: 25 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 15 }}
-              transition={{ type: 'spring', damping: 22, stiffness: 260 }}
-              className="relative w-full max-w-sm bg-surface rounded-3xl shadow-2xl border-2 border-amber-400/40 p-6 sm:p-7 flex flex-col items-center text-center overflow-hidden z-10"
+              exit={{ scale: 0.92, opacity: 0, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 280 }}
+              className="relative w-full max-w-[340px] sm:max-w-[360px] bg-white rounded-[32px] shadow-2xl overflow-hidden z-10 flex flex-col"
             >
-              {/* Decorative top flare */}
-              <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500" />
-              <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-400/20 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl pointer-events-none" />
-
-              {/* Close Button */}
+              {/* Close 'X' Button on top right */}
               <button
                 onClick={handleDismiss}
-                className="absolute top-4 right-4 p-1.5 rounded-full text-text-secondary hover:text-text-primary hover:bg-slate-100 transition active:scale-90"
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/40 hover:bg-white/70 backdrop-blur-md flex items-center justify-center text-slate-700 transition active:scale-90"
                 aria-label="Tutup"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
 
-              {/* Glowing Trophy Badge */}
-              <div className="relative mt-2 mb-4">
+              {/* ===== TOP SECTION: Periwinkle Lavender Gradient + Confetti + 3D Gold Trophy ===== */}
+              <div className="relative w-full h-[250px] sm:h-[270px] bg-gradient-to-b from-[#8f9ff5] via-[#aab8fa] to-[#e4e9fd] flex flex-col items-center justify-end overflow-hidden pb-4">
+                {/* Floating Gold Confetti */}
+                {CONFETTI_PIECES.map((piece, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ y: -8, opacity: 0 }}
+                    animate={{
+                      y: [0, 6, 0],
+                      rotate: [piece.rotate, piece.rotate + 12, piece.rotate],
+                      opacity: [0.85, 1, 0.85],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 2.8 + (i % 3) * 0.5,
+                      delay: piece.delay,
+                      ease: 'easeInOut',
+                    }}
+                    style={{
+                      position: 'absolute',
+                      top: piece.top,
+                      left: piece.left,
+                      width: `${piece.size}px`,
+                      height: `${piece.size * (i % 2 === 0 ? 1 : 1.4)}px`,
+                      backgroundColor: i % 3 === 0 ? '#fbbf24' : i % 3 === 1 ? '#f59e0b' : '#fef08a',
+                      borderRadius: i % 4 === 0 ? '50%' : '2px',
+                      transform: `rotate(${piece.rotate}deg)`,
+                      boxShadow: '0 1px 3px rgba(217, 119, 6, 0.35)',
+                    }}
+                  />
+                ))}
+
+                {/* 3D Shiny Gold Trophy Illustration */}
                 <motion.div
-                  animate={{ scale: [1, 1.08, 1], rotate: [0, -3, 3, 0] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-                  className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center shadow-lg shadow-amber-500/30 border-4 border-amber-200"
+                  initial={{ scale: 0.7, opacity: 0, y: 30 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1, type: 'spring', damping: 18, stiffness: 200 }}
+                  className="relative z-10 flex items-center justify-center -mb-1"
                 >
-                  <Trophy size={42} className="text-slate-950 fill-amber-100" />
+                  <svg
+                    viewBox="0 0 240 240"
+                    className="w-44 h-44 sm:w-48 sm:h-48 drop-shadow-[0_16px_24px_rgba(20,30,80,0.22)]"
+                  >
+                    <defs>
+                      {/* 3D Gold Cup Gradient */}
+                      <linearGradient id="refGoldCup" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#eab308" />
+                        <stop offset="25%" stopColor="#fef08a" />
+                        <stop offset="55%" stopColor="#f59e0b" />
+                        <stop offset="85%" stopColor="#d97706" />
+                        <stop offset="100%" stopColor="#92400e" />
+                      </linearGradient>
+
+                      {/* Rim Gradient */}
+                      <linearGradient id="refGoldRim" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#fffbeb" />
+                        <stop offset="40%" stopColor="#fde047" />
+                        <stop offset="100%" stopColor="#b45309" />
+                      </linearGradient>
+
+                      {/* Handles */}
+                      <linearGradient id="refGoldHandle" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#fef08a" />
+                        <stop offset="45%" stopColor="#f59e0b" />
+                        <stop offset="100%" stopColor="#92400e" />
+                      </linearGradient>
+
+                      {/* Stem */}
+                      <linearGradient id="refGoldStem" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#b45309" />
+                        <stop offset="35%" stopColor="#fef08a" />
+                        <stop offset="75%" stopColor="#d97706" />
+                        <stop offset="100%" stopColor="#78350f" />
+                      </linearGradient>
+
+                      {/* Pedestal Base (Dark Black / Slate) */}
+                      <linearGradient id="refPedestal" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#1e293b" />
+                        <stop offset="30%" stopColor="#475569" />
+                        <stop offset="70%" stopColor="#334155" />
+                        <stop offset="100%" stopColor="#0f172a" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* Pedestal Shadow */}
+                    <ellipse cx="120" cy="216" rx="64" ry="10" fill="#1e1b4b" opacity="0.22" />
+
+                    {/* Black Pedestal Plinth Base */}
+                    <path
+                      d="M68 196 L172 196 L165 214 L75 214 Z"
+                      fill="url(#refPedestal)"
+                    />
+                    <rect x="70" y="210" width="100" height="5" rx="2.5" fill="#0f172a" />
+
+                    {/* Gold Base Plate */}
+                    <path
+                      d="M82 186 L158 186 L164 196 L76 196 Z"
+                      fill="url(#refGoldRim)"
+                    />
+
+                    {/* Stem */}
+                    <path
+                      d="M107 146 L133 146 L138 186 L102 186 Z"
+                      fill="url(#refGoldStem)"
+                    />
+                    <ellipse cx="120" cy="148" rx="14" ry="4" fill="#fde047" />
+
+                    {/* Left Handle */}
+                    <path
+                      d="M78 64 C38 64 34 126 82 136 C77 144 28 126 28 64 C28 46 54 46 78 50 Z"
+                      fill="url(#refGoldHandle)"
+                    />
+                    {/* Inner cutout left handle */}
+                    <path
+                      d="M74 68 C48 68 44 116 78 124 C72 116 52 108 52 74 C52 64 64 66 74 68 Z"
+                      fill="#91a2f6"
+                      opacity="0.9"
+                    />
+
+                    {/* Right Handle */}
+                    <path
+                      d="M162 64 C202 64 206 126 158 136 C163 144 212 126 212 64 C212 46 186 46 162 50 Z"
+                      fill="url(#refGoldHandle)"
+                    />
+                    {/* Inner cutout right handle */}
+                    <path
+                      d="M166 68 C192 68 196 116 162 124 C168 116 188 108 188 74 C188 64 176 66 166 68 Z"
+                      fill="#91a2f6"
+                      opacity="0.9"
+                    />
+
+                    {/* Trophy Cup Body */}
+                    <path
+                      d="M62 48 C62 122 94 150 120 150 C146 150 178 122 178 48 Z"
+                      fill="url(#refGoldCup)"
+                    />
+
+                    {/* Specular curved reflection on left bowl */}
+                    <path
+                      d="M84 54 C84 98 98 134 112 140 C102 132 92 98 92 54 Z"
+                      fill="#ffffff"
+                      opacity="0.38"
+                    />
+
+                    {/* Specular glint spot on right bowl */}
+                    <ellipse
+                      cx="146"
+                      cy="86"
+                      rx="10"
+                      ry="28"
+                      transform="rotate(18 146 86)"
+                      fill="#ffffff"
+                      opacity="0.22"
+                    />
+
+                    {/* Top Rim Oval */}
+                    <ellipse cx="120" cy="48" rx="58" ry="12" fill="url(#refGoldRim)" />
+                    <ellipse cx="120" cy="47" rx="52" ry="9.5" fill="#ca8a04" />
+                    <ellipse cx="120" cy="46" rx="46" ry="7" fill="#78350f" />
+                  </svg>
                 </motion.div>
-                <span className="absolute -top-1 -right-1 flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500"></span>
-                </span>
               </div>
 
-              {/* Title & Congratulations */}
-              <span className="text-[11px] font-black tracking-widest text-amber-600 dark:text-amber-400 uppercase mb-1">
-                LUCKY DRAW SMANIS EDUFAIR
-              </span>
-              <h2 className="text-2xl font-black text-text-primary tracking-tight leading-tight">
-                SELAMAT! KAMU TERPILIH! 🎉
-              </h2>
-              <p className="text-xs text-text-secondary mt-1.5 leading-relaxed">
-                Akun dan tiketmu telah berhasil terpilih sebagai pemenang dalam pengundian doorprize!
-              </p>
+              {/* ===== BOTTOM SECTION: Clean White Card + Congratulations + Pill + Collect Button ===== */}
+              <div className="bg-white px-6 sm:px-7 pt-6 pb-7 flex flex-col items-center text-center">
+                {/* Heading: Exactly matching reference "Congratulations!" */}
+                <h2 className="text-2xl sm:text-[26px] font-black text-[#1e2348] tracking-tight font-sans leading-tight">
+                  Congratulations!
+                </h2>
 
-              {/* Prize Showcase Card */}
-              <div className="w-full mt-5 bg-gradient-to-b from-amber-50 to-amber-100/60 dark:from-amber-950/20 dark:to-amber-900/10 border-2 border-amber-300 dark:border-amber-700/60 rounded-2xl p-4 flex flex-col gap-2.5 shadow-inner">
-                <div className="flex items-center justify-between text-xs text-amber-900 dark:text-amber-200 font-semibold border-b border-amber-200/80 pb-2">
-                  <span className="flex items-center gap-1.5">
-                    <Gift size={15} className="text-amber-600" /> Hadiah Terpilih
-                  </span>
-                  <span className="text-[10px] font-bold uppercase bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 px-2 py-0.5 rounded-full">
-                    Resmi
-                  </span>
-                </div>
-
-                <div className="text-base font-black text-slate-900 dark:text-amber-100 tracking-tight leading-tight py-1">
-                  {winner.prize}
-                </div>
-
-                <div className="flex items-center justify-between text-[11px] text-text-secondary pt-1 border-t border-amber-200/50">
-                  <span className="flex items-center gap-1 font-medium">
-                    <Ticket size={13} /> No. Kupon:
-                  </span>
-                  <span className="font-mono font-black text-xs text-primary bg-white px-2 py-0.5 rounded-md border border-border-custom shadow-2xs">
-                    #{winner.participant_number}
-                  </span>
-                </div>
-              </div>
-
-              {/* Instructions Callout */}
-              <div className="w-full mt-4 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl flex items-start gap-2.5 text-left">
-                <CheckCircle2 size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                <p className="text-[11px] text-blue-900 dark:text-blue-200 leading-snug">
-                  Segera menuju ke <strong className="font-bold underline">Panggung Utama</strong> sekarang dan tunjukkan tiket digital Anda ke panitia untuk verifikasi dan pengambilan hadiah!
+                {/* Subtitle description */}
+                <p className="text-xs sm:text-[13px] text-[#6b7280] font-normal leading-relaxed mt-2 max-w-[270px]">
+                  Kamu terpilih memenangkan undian doorprize <strong className="font-bold text-[#1e2348]">"{winner.prize}"</strong>. Segera ke panggung utama!
                 </p>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="w-full flex flex-col gap-2 mt-5">
-                <button
-                  onClick={handleViewTicket}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-primary to-primary-hover text-white font-extrabold text-xs rounded-xl shadow-md hover:brightness-105 active:scale-98 transition flex items-center justify-center gap-2"
+                {/* Center Badge: Gold Coin Pill with Ticket Number / Prize */}
+                <div className="flex items-center gap-1.5 bg-[#fef9c3] border border-[#fde047] text-[#854d0e] font-extrabold text-xs px-3.5 py-1.5 rounded-full mt-4 shadow-xs">
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-[#f59e0b] to-[#fde047] flex items-center justify-center shadow-xs">
+                    <Gift size={11} className="text-[#78350f]" />
+                  </div>
+                  <span className="tracking-wide">No. Kupon #{winner.participant_number}</span>
+                </div>
+
+                {/* Action Button: Exactly matching reference "✓ COLLECT" button style */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleCollect}
+                  className="w-full mt-6 py-3.5 px-6 bg-[#5468ff] hover:bg-[#4357ec] text-white font-bold text-sm rounded-2xl shadow-lg shadow-[#5468ff]/30 flex items-center justify-center gap-2 cursor-pointer transition-all"
                 >
-                  <Ticket size={15} />
-                  Lihat Tiket Saya
-                  <ChevronRight size={14} />
-                </button>
-                <button
-                  onClick={handleDismiss}
-                  className="w-full py-2.5 text-xs text-text-secondary hover:text-text-primary font-semibold transition rounded-lg hover:bg-slate-100"
-                >
-                  Tutup Notifikasi
-                </button>
+                  <Check size={18} strokeWidth={2.8} />
+                  <span>COLLECT</span>
+                </motion.button>
               </div>
             </motion.div>
           </div>
@@ -232,4 +358,3 @@ export const WinnerCelebrationModal: React.FC = () => {
     </>
   )
 }
-
